@@ -11,11 +11,14 @@ function check(name: string, cond: boolean, extra = '') {
 }
 
 const seed = buildSeedExpenses()
-check('seed count = 60', seed.length === 60, `got ${seed.length}`)
-check('seed total = 199619', seed.reduce((s, e) => s + e.amount, 0) === 199619)
+check('seed count = 101', seed.length === 101, `got ${seed.length}`)
+check('seed total = 382623', seed.reduce((s, e) => s + e.amount, 0) === 382623)
 check('seed Oct month total', monthStats(seed, '2026-10').total === 199619)
 check('seed Oct count', monthStats(seed, '2026-10').count === 60)
+check('seed Nov month total', monthStats(seed, '2026-11').total === 183004)
+check('seed Nov count', monthStats(seed, '2026-11').count === 41)
 check('seed undated displayDate', seed.filter((e) => e.displayDate === 'Oct 2026').length === 51)
+check('seed Nov displayDate', seed.filter((e) => e.displayDate === 'Nov 2026').length === 41)
 check('seed dated items', seed.filter((e) => !e.displayDate).length === 9)
 check('seed amounts are numbers', seed.every((e) => typeof e.amount === 'number'))
 

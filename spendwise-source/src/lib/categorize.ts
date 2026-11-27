@@ -8,14 +8,14 @@ const RULES: Array<{ categoryId: string; keywords: string[] }> = [
   { categoryId: 'education', keywords: ['school fee', 'school', 'books', 'stationary', 'stationery', 'tuition', 'exam fee'] },
   { categoryId: 'healthcare', keywords: ['medicine', 'doctor', 'hospital', 'pharmacy', 'clinic', 'lab test'] },
   { categoryId: 'utilities', keywords: ['electricity', 'sui', 'sngpl', 'wasa', 'internet', 'water bill', 'gas bill', 'bill', 'rox package', 'esim', 'water', 'sewerage'] },
-  { categoryId: 'household', keywords: ['maid', 'sakina', 'shamim', 'saim', 'mali', 'locker', 'sakkina', 'jaru', 'cleaning', 'plumber', 'electrician'] },
-  { categoryId: 'family', keywords: ['ahmad', 'hashir', 'kids', 'pampers', 'birthday', 'gift', 'ganiya', 'toy', 'park', 'uniform', 'baby'] },
-  { categoryId: 'food', keywords: ['kfc', 'cock', 'bull', 'kulfi', 'chai', 'paratha', 'roll', 'shawarma', 'pizza', 'burger', 'restaurant', 'cake', 'bakes', 'dining', 'cafe', 'coffee'] },
+  { categoryId: 'household', keywords: ['maid', 'sakina', 'shamim', 'samim', 'saim', 'mali', 'locker', 'sakkina', 'jaru', 'cleaning', 'plumber', 'electrician'] },
+  { categoryId: 'family', keywords: ['ahmad', 'hashir', 'kids', 'bachon', 'bacha', 'pampers', 'birthday', 'gift', 'ganiya', 'toy', 'park', 'uniform', 'baby'] },
+  { categoryId: 'food', keywords: ['kfc', 'cock', 'bull', 'kulfi', 'chai', 'paratha', 'roll', 'shawarma', 'shuwarma', 'pizza', 'burger', 'restaurant', 'cake', 'bakes', 'dining', 'cafe', 'coffee', 'ice cream', 'karahi', 'bbq', 'sinbad'] },
   { categoryId: 'travelling', keywords: ['petrol', 'fuel', 'careem', 'uber', 'parking', 'taxi', 'bus fare', 'train', 'flight', 'toll'] },
   { categoryId: 'entertainment', keywords: ['movie', 'cinema', 'subscription', 'netflix', 'spotify', 'game'] },
   { categoryId: 'personal', keywords: ['hair cut', 'haircut', 'salon', 'barber', 'shampoo'] },
   { categoryId: 'shopping', keywords: ['shirt', 'shoes', 'clothes', 'shopping', 'dress'] },
-  { categoryId: 'grocery', keywords: ['grocery', 'milk', 'egg', 'bread', 'atta', 'flour', 'rice', 'sugar', 'maida', 'sabzi', 'vegetable', 'fruit', 'apple', 'banana', 'chicken', 'snack', 'store', 'market', 'dry milk', 'corn', 'lettuce', 'buns', 'oil', 'ghee', 'daal', 'spice'] },
+  { categoryId: 'grocery', keywords: ['grocery', 'milk', 'egg', 'bread', 'atta', 'flour', 'rice', 'sugar', 'maida', 'sabzi', 'vegetable', 'fruit', 'apple', 'banana', 'chicken', 'snack', 'store', 'market', 'dry milk', 'corn', 'lettuce', 'buns', 'oil', 'ghee', 'daal', 'spice', 'jalal', 'rainbow'] },
 ]
 
 export function suggestCategory(description: string): string | null {

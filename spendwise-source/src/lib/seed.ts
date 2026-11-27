@@ -2,13 +2,16 @@ import { suggestCategoryOrOther } from './categorize'
 import type { Expense } from './types'
 
 /**
- * Maham's REAL October 2026 expenses — the only seed data in the app.
+ * Maham's REAL October + November 2026 expenses — the only seed data in the app.
  * No fake/demo transactions are ever added.
  *
  * [description, amount PKR, ISO date, display label (only for undated items)]
- * Undated October items use 2026-10-15 internally for month maths, but the
- * UI shows "Oct 2026" via displayDate — no specific day is invented.
- * Verified total: Rs 199,619 across 60 items (see scripts/verify-seed.mjs).
+ * Undated items use the 15th internally for month maths, but the
+ * UI shows "Oct 2026" / "Nov 2026" via displayDate — no specific day is invented.
+ * Verified totals: Oct Rs 199,619 across 60 items; Nov Rs 183,004 across 41 items;
+ * combined Rs 382,623 across 101 items (see scripts/verify-seed.mjs).
+ * November list shared by Maham on 28 Nov 2026. "Lwasa" is her spelling of the
+ * Wasa bill (same Rs 11,180 as October) and "samim baji" is Shamim Baji.
  */
 const SEED_ROWS: Array<[string, number, string, string?]> = [
   ['Cock & Bull + Kulfi', 1100, '2026-10-01'],
@@ -72,10 +75,56 @@ const SEED_ROWS: Array<[string, number, string, string?]> = [
   ['Sabzi Basic', 1000, '2026-10-15', 'Oct 2026'],
   ['Saim', 1000, '2026-10-15', 'Oct 2026'],
   ['Sakkina for Ground Jaru', 1000, '2026-10-15', 'Oct 2026'],
+  // November 2026, exact day not recorded — shared 28 Nov 2026
+  ['Rainbow Grocery', 9500, '2026-11-15', 'Nov 2026'],
+  ['Buns', 450, '2026-11-15', 'Nov 2026'],
+  ['Eggs', 280, '2026-11-15', 'Nov 2026'],
+  ['Lettuce', 250, '2026-11-15', 'Nov 2026'],
+  ['Bachon Ki Cheez', 350, '2026-11-15', 'Nov 2026'],
+  ['Wasa Bill', 11180, '2026-11-15', 'Nov 2026'],
+  ['My Water', 4500, '2026-11-15', 'Nov 2026'],
+  ['Bahir Wali Maid', 2000, '2026-11-15', 'Nov 2026'],
+  ['Shamim Baji', 500, '2026-11-15', 'Nov 2026'],
+  ['Cock and Bull', 1000, '2026-11-15', 'Nov 2026'],
+  ['Hico Ice Cream', 500, '2026-11-15', 'Nov 2026'],
+  ['Shawarma', 1000, '2026-11-15', 'Nov 2026'],
+  ['Shawarma', 800, '2026-11-15', 'Nov 2026'],
+  ['Sabzi', 1000, '2026-11-15', 'Nov 2026'],
+  ['Grocery', 500, '2026-11-15', 'Nov 2026'],
+  ['Chai + Peanuts', 450, '2026-11-15', 'Nov 2026'],
+  ['Cock and Bull', 1600, '2026-11-15', 'Nov 2026'],
+  ['Rahim Store', 11000, '2026-11-15', 'Nov 2026'],
+  ['Cake', 2300, '2026-11-15', 'Nov 2026'],
+  ['Internet', 2274, '2026-11-15', 'Nov 2026'],
+  ['Hashir Monthly', 1000, '2026-11-15', 'Nov 2026'],
+  ['SNGPL', 1080, '2026-11-15', 'Nov 2026'],
+  ['Ahmad Ibrahim School Fee', 80000, '2026-11-15', 'Nov 2026'],
+  ['Cock and Bull', 2000, '2026-11-15', 'Nov 2026'],
+  ['Eggs Bread', 550, '2026-11-15', 'Nov 2026'],
+  ['Jawa Karahi', 2200, '2026-11-15', 'Nov 2026'],
+  ['BBQ', 1900, '2026-11-15', 'Nov 2026'],
+  ['Chai', 300, '2026-11-15', 'Nov 2026'],
+  ['KFC', 1500, '2026-11-15', 'Nov 2026'],
+  ['KFC', 3300, '2026-11-15', 'Nov 2026'],
+  ['Chai + Paratha', 700, '2026-11-15', 'Nov 2026'],
+  ['Bacha Party Sinbad + Pizza', 10000, '2026-11-15', 'Nov 2026'],
+  ['Cock and Bull', 1000, '2026-11-15', 'Nov 2026'],
+  ['Eggs Bread', 550, '2026-11-15', 'Nov 2026'],
+  ['Quick Check', 340, '2026-11-15', 'Nov 2026'],
+  ['Picnic Mat', 1000, '2026-11-15', 'Nov 2026'],
+  ['Bachon Ki Shopping', 15000, '2026-11-15', 'Nov 2026'],
+  ['Jalal Sons', 4700, '2026-11-15', 'Nov 2026'],
+  ['Cock and Bull', 1000, '2026-11-15', 'Nov 2026'],
+  ['Dumx', 2700, '2026-11-15', 'Nov 2026'],
+  ['Eggs Bread', 750, '2026-11-15', 'Nov 2026'],
 ]
 
-export const SEED_TOTAL = 199619
-export const SEED_COUNT = 60
+export const SEED_TOTAL = 382623
+export const SEED_COUNT = 101
+export const OCT_TOTAL = 199619
+export const OCT_COUNT = 60
+export const NOV_TOTAL = 183004
+export const NOV_COUNT = 41
 
 export function buildSeedExpenses(): Expense[] {
   const now = new Date().toISOString()
