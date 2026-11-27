@@ -1,5 +1,5 @@
 import { DEFAULT_CATEGORIES } from './categories'
-import { assertSeedTotal, buildSeedExpenses } from './seed'
+import { SEED_VERSION, assertSeedTotal, buildSeedExpenses } from './seed'
 import type { Category, Expense, Store } from './types'
 
 export const STORAGE_KEY = 'spendwise-v1'
@@ -19,7 +19,18 @@ export interface StorageAdapter {
 function defaultStore(): Store {
   const expenses = buildSeedExpenses()
   assertSeedTotal(expenses)
-  return { version: 1, expenses, categories: DEFAULT_CATEGORIES, currency: 'PKR' }
+  return { version: SEED_VERSION, expenses, categories: DEFAULT_CATEGORIES, currency: 'PKR' }
+}
+
+/** Add any seed expenses missing from an older stored copy (e.g. a new
+ * month was added to the seed after the user's first visit). Items the
+ * user added themselves are never touched, and seed items are only merged
+ * once per seed version, so a seed item the user deliberately deleted
+ * after that version is not resurrected. */
+export function mergeMissingSeedExpenses(expenses: Expense[]): Expense[] {
+  const known = new Set(expenses.map((e) => e.id))
+  const missing = buildSeedExpenses().filter((e) => !known.has(e.id))
+  return missing.length ? [...missing, ...expenses] : expenses
 }
 
 function isValidStore(v: unknown): v is Store {
@@ -46,7 +57,16 @@ export const localStorageAdapter: StorageAdapter = {
         ...parsed.categories,
         ...DEFAULT_CATEGORIES.filter((c) => !known.has(c.id)),
       ]
-      return { ...parsed, categories, currency: parsed.currency || 'PKR' }
+      // Merge in seed expenses added in a later seed version (e.g. November
+      // was added after a user first opened the October-only app).
+      const storedVersion = typeof parsed.version === 'number' ? parsed.version : 1
+      const expenses =
+        storedVersion < SEED_VERSION ? mergeMissingSeedExpenses(parsed.expenses) : parsed.expenses
+      const store: Store = { ...parsed, expenses, categories, currency: parsed.currency || 'PKR', version: SEED_VERSION }
+      if (expenses !== parsed.expenses) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
+      }
+      return store
     } catch {
       return defaultStore()
     }

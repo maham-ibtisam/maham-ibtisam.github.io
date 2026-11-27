@@ -119,6 +119,10 @@ const SEED_ROWS: Array<[string, number, string, string?]> = [
   ['Eggs Bread', 750, '2026-11-15', 'Nov 2026'],
 ]
 
+/** Bump this whenever a new month's real expenses are added to the seed.
+ * storage.load() merges in seed items missing from an older stored copy,
+ * so returning visitors get the new month without losing their own edits. */
+export const SEED_VERSION = 2
 export const SEED_TOTAL = 382623
 export const SEED_COUNT = 101
 export const OCT_TOTAL = 199619

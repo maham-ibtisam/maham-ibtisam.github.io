@@ -27,7 +27,7 @@ export interface Expense {
 }
 
 export interface Store {
-  version: 1
+  version: number
   expenses: Expense[]
   categories: Category[]
   currency: string

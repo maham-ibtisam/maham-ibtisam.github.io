@@ -1,4 +1,5 @@
 import { buildSeedExpenses } from '../src/lib/seed.ts'
+import { mergeMissingSeedExpenses } from '../src/lib/storage.ts'
 import { parseExpenseText } from '../src/lib/parse.ts'
 import { suggestCategory } from '../src/lib/categorize.ts'
 import { monthStats } from '../src/lib/analytics.ts'
@@ -21,6 +22,12 @@ check('seed undated displayDate', seed.filter((e) => e.displayDate === 'Oct 2026
 check('seed Nov displayDate', seed.filter((e) => e.displayDate === 'Nov 2026').length === 41)
 check('seed dated items', seed.filter((e) => !e.displayDate).length === 9)
 check('seed amounts are numbers', seed.every((e) => typeof e.amount === 'number'))
+// Migration: a stored October-only copy (60 items) must gain the 41 November items, keeping its own items.
+const octOnly = seed.filter((e) => e.date.startsWith('2026-10'))
+const merged = mergeMissingSeedExpenses(octOnly)
+check('migration adds Nov to Oct-only copy', merged.length === 101, `got ${merged.length}`)
+check('migration Nov total', monthStats(merged, '2026-11').total === 183004)
+check('migration is idempotent', mergeMissingSeedExpenses(merged).length === 101)
 
 const parsed = parseExpenseText(`Rainbow grocery = 9500
 Buns = 450

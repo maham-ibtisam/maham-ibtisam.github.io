@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from 'react'
 import type { ExpenseDraft } from './components/ExpenseForm'
 import { DEFAULT_CATEGORIES } from './lib/categories'
+import { SEED_VERSION } from './lib/seed'
 import { localStorageAdapter, newExpense } from './lib/storage'
 import type { Category, Expense, ParsedRow, Store, View } from './lib/types'
 import { formatMoney, monthKey, sum, todayISO, uid } from './lib/utils'
@@ -104,7 +105,7 @@ export default function App() {
   }
 
   function clearAll() {
-    setStore({ version: 1, expenses: [], categories: DEFAULT_CATEGORIES, currency: 'PKR' })
+    setStore({ version: SEED_VERSION, expenses: [], categories: DEFAULT_CATEGORIES, currency: 'PKR' })
     setToast('All data cleared.')
   }
 
