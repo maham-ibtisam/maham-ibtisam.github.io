@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maham's Grocery List</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f6f2fb;color:#2b2140}
+  header{background:#6d28d9;color:#fff;padding:22px 18px 18px;text-align:center}
+  header h1{margin:0;font-size:26px}
+  header p{margin:6px 0 0;opacity:.9;font-size:14px}
+  main{max-width:680px;margin:0 auto;padding:16px 14px 40px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  .card{background:#fff;border:1px solid #e6def7;border-radius:14px;padding:14px;text-align:center}
+  .card b{display:block;font-size:24px;color:#6d28d9}
+  .card span{font-size:13px;color:#6b6480}
+  .box{background:#fff;border:1px solid #e6def7;border-radius:14px;padding:14px;margin-bottom:14px}
+  .box h2{margin:0 0 10px;font-size:17px}
+  label{display:block;font-size:13px;color:#6b6480;margin:10px 0 4px}
+  input{width:100%;padding:12px;border:1.5px solid #d9cdf2;border-radius:10px;font-size:16px}
+  input:focus{outline:2px solid #6d28d9;border-color:#6d28d9}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  button{cursor:pointer;border:0;border-radius:10px;font-size:16px;font-weight:700;padding:13px 16px}
+  .add{width:100%;background:#6d28d9;color:#fff;margin-top:14px}
+  .add:active{transform:scale(.98)}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .wa{background:#25d366;color:#fff}
+  .copy{background:#fff;color:#6d28d9;border:1.5px solid #6d28d9}
+  .danger{background:none;color:#b91c1c;font-size:13px;padding:8px;text-decoration:underline}
+  ul{list-style:none;margin:0;padding:0}
+  li{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#fff;border:1px solid #eee6fb;border-radius:12px;padding:12px;margin-bottom:8px}
+  li .name{font-weight:600}
+  li .date{font-size:12px;color:#8a829e;margin-top:2px}
+  li .price{font-weight:800;color:#6d28d9;white-space:nowrap}
+  li .del{background:#fee2e2;color:#b91c1c;padding:7px 10px;border-radius:8px;font-size:14px}
+  .empty{text-align:center;color:#8a829e;padding:18px 0}
+  .note{font-size:13px;color:#6b6480;text-align:center;line-height:1.5}
+  .search{margin-bottom:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛒 Maham's Grocery List</h1>
+  <p>Item ka naam aur price daalein — list khud save ho jayegi</p>
+</header>
+<main>
+  <div class="cards">
+    <div class="card"><b id="total">Rs 0</b><span>Total Kharcha</span></div>
+    <div class="card"><b id="count">0</b><span>Items</span></div>
+  </div>
+
+  <div class="box">
+    <h2>Naya item add karein</h2>
+    <label for="name">Item ka naam</label>
+    <input id="name" placeholder="e.g. Eggs, Bread, Doodh..." autocomplete="off">
+    <div class="row">
+      <div>
+        <label for="price">Price (Rs)</label>
+        <input id="price" type="number" min="1" inputmode="numeric" placeholder="e.g. 500">
+      </div>
+      <div>
+        <label for="date">Date</label>
+        <input id="date" type="date">
+      </div>
+    </div>
+    <button class="add" onclick="addItem()">+ Add Item</button>
+  </div>
+
+  <div class="box">
+    <h2>List</h2>
+    <input class="search" id="search" placeholder="🔍 Search karein — e.g. eggs, KFC..." oninput="render()">
+    <ul id="list"></ul>
+    <p class="empty" id="empty" style="display:none">Abhi koi item nahi hai. Upar se pehla item add karein.</p>
+  </div>
+
+  <div class="actions">
+    <button class="wa" onclick="shareWhatsApp()">WhatsApp pe bhejo</button>
+    <button class="copy" onclick="copyList()">List copy karein</button>
+  </div>
+  <p style="text-align:center"><button class="danger" onclick="clearAll()">Saari list delete karein</button></p>
+  <p class="note">Aapki October ki list pehle se isme daal di gayi hai — total Rs 199,619.<br>
+  Data aapke is phone / browser mein save hota hai, is liye roz WhatsApp pe likhne ki zaroorat nahi — yahan add karein, aur jab chahain WhatsApp pe share kar dein.</p>
+</main>
+
+<script>
+const KEY = 'maham-grocery-v1';
+const SEED = [
+["Cock & Bull + Kulfi",1100,"1 Oct 2026"],["Eggs Bread",500,"2 Oct 2026"],
+["Groceries",5000,"3 Oct 2026"],["KFC",2700,"3 Oct 2026"],
+["KFC + Cokes",2500,"4 Oct 2026"],["Apple Bananas + Eggs",2000,"4 Oct 2026"],
+["Maida Sugar Bread Medicine",1640,"5 Oct 2026"],["Shamim Baji",500,"6 Oct 2026"],
+["Chai",500,"6 Oct 2026"],["Cakes and Bakes",505,"Oct 2026"],
+["Cakes and Bakes Milk",343,"Oct 2026"],["Cock and Bull",1000,"Oct 2026"],
+["Quetta Chai",400,"Oct 2026"],["Eggs 2 Bread",800,"Oct 2026"],
+["Sunday Market Grocery + Chicken",6000,"Oct 2026"],["Eggs",290,"Oct 2026"],
+["Atta + Oil",3000,"Oct 2026"],["Ahmad Birthday Cake + Gifts",1500,"Oct 2026"],
+["Stationary",650,"Oct 2026"],["Bahir Wali Maid",2000,"Oct 2026"],
+["Sakina",1000,"Oct 2026"],["Ahmad School Fee",80000,"Oct 2026"],
+["Milkman",11750,"Oct 2026"],["My Water",4750,"Oct 2026"],
+["Sui",990,"Oct 2026"],["Wasa Bill",11180,"Oct 2026"],
+["Rox Package",5000,"Oct 2026"],["Internet",2274,"Oct 2026"],
+["Hashir Monthly",1000,"Oct 2026"],["SNGPL",1080,"Oct 2026"],
+["Subscriptions",7037,"Oct 2026"],["Mali",2000,"Oct 2026"],
+["Locker",6000,"Oct 2026"],["Locker Tax",960,"Oct 2026"],
+["Rahat Store Eggs Snacks",400,"Oct 2026"],["Whites Shirts for Kids",1500,"Oct 2026"],
+["Quetta Chai Paratha",650,"Oct 2026"],["Cakes and Bakes",560,"Oct 2026"],
+["Quetta Chai Paratha",400,"Oct 2026"],["Cock and Bull",1000,"Oct 2026"],
+["Eggs Bread",550,"Oct 2026"],["Kulfi",450,"Oct 2026"],
+["Hawk Sports Uniform",4600,"Oct 2026"],["Karachi Roll Paratha",500,"Oct 2026"],
+["Pampers",1450,"Oct 2026"],["Ganiya Api Beti",5000,"Oct 2026"],
+["Hair Cuts Bachon K",1000,"Oct 2026"],["Eggs",270,"Oct 2026"],
+["Bread",240,"Oct 2026"],["Burger Patties",700,"Oct 2026"],
+["School Snack Fries Corns Juice",2000,"Oct 2026"],["eSIM",1100,"Oct 2026"],
+["Park",600,"Oct 2026"],["Cock and Bull",2000,"Oct 2026"],
+["Kulfi",300,"Oct 2026"],["Dry Milk + Eggs Bread",2600,"Oct 2026"],
+["Uro Store",800,"Oct 2026"],["Sabzi Basic",1000,"Oct 2026"],
+["Saim",1000,"Oct 2026"],["Sakkina for Ground Jaru",1000,"Oct 2026"]
+].map((x,i)=>({id:i+1,name:x[0],price:x[1],date:x[2]}));
+
+let items;
+try { items = JSON.parse(localStorage.getItem(KEY)) || null; } catch(e){ items = null; }
+if (!items || !items.length) { items = SEED.slice(); save(); }
+
+function save(){ localStorage.setItem(KEY, JSON.stringify(items)); }
+function fmt(n){ return 'Rs ' + Number(n).toLocaleString('en-PK'); }
+function fmtDate(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  if(isNaN(d)) return iso;
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function addItem(){
+  const name = document.getElementById('name').value.trim();
+  const price = Number(document.getElementById('price').value);
+  const dateVal = document.getElementById('date').value;
+  if(!name){ alert('Pehle item ka naam likhein'); return; }
+  if(!price || price <= 0){ alert('Sahi price likhein'); return; }
+  items.unshift({id:Date.now(), name:name, price:price, date: dateVal ? fmtDate(dateVal) : fmtDate(new Date().toISOString().slice(0,10))});
+  save(); render();
+  document.getElementById('name').value=''; document.getElementById('price').value='';
+  document.getElementById('name').focus();
+}
+function delItem(id){ if(confirm('Ye item delete kar dein?')){ items = items.filter(x=>x.id!==id); save(); render(); } }
+function render(){
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  const shown = items.filter(x=>!q || x.name.toLowerCase().includes(q));
+  const total = shown.reduce((s,x)=>s+Number(x.price||0),0);
+  document.getElementById('total').textContent = fmt(total);
+  document.getElementById('count').textContent = shown.length;
+  document.getElementById('empty').style.display = shown.length ? 'none' : 'block';
+  document.getElementById('list').innerHTML = shown.map(x=>
+    '<li><div><div class="name"></div><div class="date"></div></div><div style="display:flex;align-items:center;gap:8px"><span class="price"></span><button class="del" onclick="delItem('+x.id+')">✕</button></div></li>'
+  ).join('');
+  // fill text safely (avoid HTML injection from item names)
+  const lis = document.querySelectorAll('#list li');
+  shown.forEach((x,i)=>{
+    lis[i].querySelector('.name').textContent = x.name;
+    lis[i].querySelector('.date').textContent = x.date || '';
+    lis[i].querySelector('.price').textContent = fmt(x.price);
+  });
+}
+function listText(){
+  const lines = items.map(x=> '• ' + x.name + ' — Rs ' + Number(x.price).toLocaleString('en-PK') + (x.date ? ' (' + x.date + ')' : ''));
+  const total = items.reduce((s,x)=>s+Number(x.price||0),0);
+  return "Maham's Grocery List\n\n" + lines.join('\n') + "\n\nTotal: Rs " + total.toLocaleString('en-PK');
+}
+function shareWhatsApp(){
+  const url = 'https://wa.me/?text=' + encodeURIComponent(listText());
+  window.open(url, '_blank');
+}
+function copyList(){
+  const t = listText();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(()=>alert('List copy ho gayi — ab WhatsApp pe paste kar dein')).catch(()=>{ prompt('Copy karein:', t); });
+  } else { prompt('Copy karein:', t); }
+}
+function clearAll(){
+  if(confirm('Saari list delete kar dein? Ye wapas nahi aayegi.')){
+    items = []; save(); render();
+  }
+}
+document.getElementById('date').value = new Date().toISOString().slice(0,10);
+document.getElementById('price').addEventListener('keydown', e=>{ if(e.key==='Enter') addItem(); });
+document.getElementById('name').addEventListener('keydown', e=>{ if(e.key==='Enter') addItem(); });
+render();
+</script>
+</body>
+</html>
