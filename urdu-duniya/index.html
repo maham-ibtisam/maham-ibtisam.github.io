@@ -1,0 +1,1615 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Meri Urdu Duniya – میری اردو دنیا</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2rem; }
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      :root{
+        color-scheme: light dark;
+        --bg:#fdf3e3; --bg2:#e8f7ee; --card:#ffffff; --ink:#2d2a32; --ink-soft:#5c5766;
+        --green:#1f9d63; --green-d:#14713f; --orange:#f59e0b; --pink:#ec5f8f; --sky:#2f9fd8;
+        --purple:#7c5cd6; --red:#e05252; --yellow:#ffd93d; --line:#ead9bd;
+        --shadow:0 6px 0 rgba(60,40,10,.10), 0 14px 28px rgba(60,40,10,.10);
+        --radius:22px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#171a26; --bg2:#101722; --card:#232838; --ink:#f2eefc; --ink-soft:#b9b3cc;
+          --line:#3a405a; --shadow:0 6px 0 rgba(0,0,0,.35), 0 14px 28px rgba(0,0,0,.4);
+          --green:#2fbf7f; --green-d:#2fbf7f;
+        }
+      }
+      html{ scroll-behavior:smooth; }
+      body{
+        margin:0; color:var(--ink);
+        font-family:"Noto Naskh Arabic","Baloo 2",system-ui,sans-serif;
+        background:
+          radial-gradient(700px 340px at 12% -60px, rgba(255,217,61,.35), transparent 60%),
+          radial-gradient(760px 380px at 95% -40px, rgba(47,159,216,.22), transparent 60%),
+          radial-gradient(600px 300px at 50% 115%, rgba(236,95,143,.16), transparent 60%),
+          linear-gradient(180deg, var(--bg), var(--bg2));
+        min-height:100vh;
+      }
+      .nastaliq{ font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif; }
+      button{ font-family:inherit; cursor:pointer; }
+      .wrap{ max-width:1060px; margin:0 auto; padding:14px 14px 90px; }
+
+      /* ---------- top bar ---------- */
+      .topbar{
+        position:sticky; top:0; z-index:40; backdrop-filter:blur(10px);
+        background:color-mix(in srgb, var(--bg) 82%, transparent);
+        border-bottom:2px dashed var(--line);
+      }
+      .topbar-in{ max-width:1060px; margin:0 auto; padding:10px 14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+      .brand{ display:flex; align-items:center; gap:10px; min-width:0; }
+      .brand .parrot{ font-size:40px; line-height:1; filter:drop-shadow(0 3px 4px rgba(0,0,0,.2)); animation:bob 3s ease-in-out infinite; }
+      @keyframes bob{ 0%,100%{ transform:translateY(0) rotate(-3deg);} 50%{ transform:translateY(-5px) rotate(3deg);} }
+      .brand h1{ margin:0; font-size:clamp(20px,4.5vw,30px); line-height:1.5; color:var(--green-d); font-weight:700; }
+      .brand small{ display:block; font-family:"Baloo 2",sans-serif; font-size:12px; letter-spacing:.14em; color:var(--ink-soft); font-weight:700; }
+      .top-actions{ margin-inline-start:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+      .chip{
+        display:inline-flex; align-items:center; gap:6px; background:var(--card); border:2px solid var(--line);
+        border-radius:999px; padding:6px 14px; font-weight:700; font-size:17px; box-shadow:0 3px 0 rgba(60,40,10,.08);
+      }
+      .chip .star{ color:var(--orange); font-size:19px; }
+      .icon-btn{
+        width:46px; height:46px; border-radius:50%; border:2px solid var(--line); background:var(--card);
+        font-size:21px; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 3px 0 rgba(60,40,10,.08);
+      }
+      .icon-btn:active{ transform:translateY(2px); box-shadow:none; }
+
+      /* ---------- generic ---------- */
+      .view{ display:none; animation:fadein .35s ease; }
+      .view.active{ display:block; }
+      @keyframes fadein{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
+      .card{ background:var(--card); border:2px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; }
+      .sec-head{ display:flex; align-items:center; gap:12px; margin:20px 2px 14px; flex-wrap:wrap; }
+      .sec-head h2{ margin:0; font-size:clamp(24px,5vw,34px); line-height:1.6; color:var(--green-d); }
+      .sec-head .sub{ color:var(--ink-soft); font-size:16px; font-weight:600; }
+      .back-btn{
+        border:none; background:var(--green); color:#fff; font-weight:700; font-size:17px;
+        border-radius:999px; padding:10px 20px; min-height:48px; box-shadow:0 4px 0 var(--green-d);
+      }
+      .back-btn:active{ transform:translateY(3px); box-shadow:none; }
+      .big-btn{
+        border:none; border-radius:18px; padding:14px 22px; min-height:56px; font-size:19px; font-weight:700; color:#fff;
+        background:var(--green); box-shadow:0 5px 0 var(--green-d); display:inline-flex; align-items:center; gap:9px; justify-content:center;
+      }
+      .big-btn:active{ transform:translateY(4px); box-shadow:none; }
+      .big-btn.orange{ background:var(--orange); box-shadow:0 5px 0 #b97a06; }
+      .big-btn.pink{ background:var(--pink); box-shadow:0 5px 0 #b93a68; }
+      .big-btn.sky{ background:var(--sky); box-shadow:0 5px 0 #1e6f9c; }
+      .big-btn.purple{ background:var(--purple); box-shadow:0 5px 0 #563d9e; }
+      .big-btn.ghost{ background:var(--card); color:var(--ink); border:2px solid var(--line); box-shadow:0 5px 0 var(--line); }
+      .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+      .center{ text-align:center; }
+      .muted{ color:var(--ink-soft); }
+      .hidden{ display:none !important; }
+
+      /* ---------- home ---------- */
+      .hero{ display:grid; grid-template-columns:1.25fr .75fr; gap:16px; margin-top:16px; }
+      @media (max-width:720px){ .hero{ grid-template-columns:1fr; } }
+      .hero-main{ background:linear-gradient(135deg,#25b26e,#159957); color:#fff; border:none; position:relative; overflow:hidden; }
+      .hero-main::after{ content:"ا ب پ ت"; position:absolute; left:-8px; bottom:-30px; font-size:110px; font-weight:700; opacity:.13; letter-spacing:6px; }
+      .hero-main h2{ margin:0 0 4px; font-size:clamp(26px,5.5vw,38px); line-height:1.7; }
+      .hero-main p{ margin:0; font-size:18px; opacity:.95; line-height:1.9; }
+      .level-line{ display:flex; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap; position:relative; z-index:1; }
+      .level-badge{ background:rgba(255,255,255,.22); border:2px solid rgba(255,255,255,.5); padding:6px 16px; border-radius:999px; font-weight:700; font-size:17px; }
+      .progress-track{ flex:1; min-width:130px; height:16px; background:rgba(255,255,255,.3); border-radius:999px; overflow:hidden; }
+      .progress-fill{ height:100%; background:var(--yellow); border-radius:999px; transition:width .6s ease; width:0%; }
+      .teacher-card{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:6px; }
+      .teacher-face{ font-size:88px; line-height:1.15; animation:bob 3.4s ease-in-out infinite; }
+      .bubble{ background:var(--bg2); border:2px dashed var(--green); border-radius:16px; padding:10px 14px; font-size:17px; font-weight:600; line-height:1.9; }
+      .menu-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(158px,1fr)); gap:14px; margin-top:16px; }
+      .menu-card{
+        border:2px solid var(--line); border-radius:var(--radius); background:var(--card); box-shadow:var(--shadow);
+        padding:18px 12px 14px; text-align:center; min-height:150px; display:flex; flex-direction:column; align-items:center; gap:4px;
+        transition:transform .15s ease; width:100%; color:var(--ink);
+      }
+      .menu-card:hover{ transform:translateY(-4px) rotate(-.5deg); }
+      .menu-card:active{ transform:scale(.97); }
+      .menu-card .ic{ font-size:52px; line-height:1.2; }
+      .menu-card .ur{ font-size:23px; font-weight:700; line-height:1.7; }
+      .menu-card .en{ font-family:"Baloo 2",sans-serif; font-size:12.5px; font-weight:700; letter-spacing:.08em; color:var(--ink-soft); text-transform:uppercase; }
+      .menu-card .tag{ font-size:13.5px; color:var(--ink-soft); font-weight:600; }
+      .daily-card{ margin-top:16px; background:linear-gradient(120deg,#fff7e0,#ffe9f3); border-color:#f3d189; display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+      @media (prefers-color-scheme: dark){ .daily-card{ background:linear-gradient(120deg,#2c2a1e,#33222e); } }
+      .daily-card .timer{ font-family:"Baloo 2",sans-serif; font-size:34px; font-weight:800; color:var(--orange); direction:ltr; }
+      .badges-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+      .badge-item{ text-align:center; width:86px; padding:10px 4px; border-radius:16px; background:var(--card); border:2px solid var(--line); }
+      .badge-item .bi{ font-size:34px; filter:grayscale(1); opacity:.35; }
+      .badge-item.got .bi{ filter:none; opacity:1; }
+      .badge-item .bl{ font-size:13px; font-weight:700; line-height:1.5; }
+
+      /* ---------- alphabet ---------- */
+      .alpha-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(86px,1fr)); gap:12px; }
+      .alpha-cell{
+        background:var(--card); border:2.5px solid var(--line); border-radius:18px; min-height:104px; padding:8px 4px;
+        display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; box-shadow:0 4px 0 rgba(60,40,10,.07);
+        transition:transform .12s ease; color:var(--ink); position:relative;
+      }
+      .alpha-cell:hover{ transform:translateY(-3px); }
+      .alpha-cell .L{ font-size:46px; font-weight:700; line-height:1.35; }
+      .alpha-cell .n{ font-size:14.5px; color:var(--ink-soft); font-weight:700; }
+      .alpha-cell.learned{ border-color:var(--green); background:color-mix(in srgb, var(--green) 10%, var(--card)); }
+      .alpha-cell.learned::after{ content:"⭐"; position:absolute; top:4px; inset-inline-start:6px; font-size:15px; }
+      .letter-stage{ text-align:center; padding:10px 6px 4px; }
+      .giant-letter{ font-size:clamp(130px,34vw,220px); font-weight:700; line-height:1.25; color:var(--green-d); display:inline-block; animation:pop .45s ease; }
+      @keyframes pop{ 0%{ transform:scale(.6);} 60%{ transform:scale(1.12);} 100%{ transform:scale(1);} }
+      .letter-name{ font-size:30px; font-weight:700; }
+      .example-pic{ font-size:96px; line-height:1.2; display:inline-block; animation:bob 3s ease-in-out infinite; }
+      .example-pic svg{ width:96px; height:96px; }
+      .example-word{ font-size:44px; font-weight:700; color:var(--purple); line-height:1.5; }
+      .dots-note{ display:inline-block; background:var(--bg2); border:2px dashed var(--sky); color:var(--ink); border-radius:999px; padding:6px 18px; font-weight:700; font-size:16.5px; margin-top:8px; }
+      .forms-row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px; }
+      .form-box{ background:var(--bg); border:2px solid var(--line); border-radius:14px; padding:6px 18px; text-align:center; }
+      .form-box .f{ font-size:40px; font-weight:700; line-height:1.4; }
+      .form-box .fl{ font-size:13px; color:var(--ink-soft); font-weight:700; }
+      .nav-arrows{ display:flex; justify-content:space-between; gap:10px; margin-top:16px; }
+
+      /* ---------- joining ---------- */
+      .lvl-tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+      .lvl-tab{ border:2px solid var(--line); background:var(--card); border-radius:999px; padding:9px 18px; min-height:48px; font-size:17px; font-weight:700; color:var(--ink); }
+      .lvl-tab.on{ background:var(--purple); border-color:var(--purple); color:#fff; }
+      .join-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
+      .join-item{ text-align:right; display:flex; align-items:center; gap:12px; padding:14px 16px; }
+      .join-item .jw{ font-size:36px; font-weight:700; color:var(--green-d); line-height:1.4; }
+      .join-item .jp{ font-size:21px; color:var(--ink-soft); font-weight:600; }
+      .join-item .play{ margin-inline-start:auto; flex:none; }
+      .join-stage{ min-height:190px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; }
+      .parts-row{ display:flex; gap:14px; align-items:center; justify-content:center; flex-wrap:wrap; }
+      .part-chip{
+        font-size:clamp(52px,13vw,84px); font-weight:700; line-height:1.3; background:var(--bg); border:3px solid var(--sky);
+        border-radius:20px; padding:2px 26px 10px; transition:all .8s cubic-bezier(.6,-0.1,.3,1.3); position:relative;
+      }
+      .part-chip.speaking{ background:var(--yellow); border-color:var(--orange); transform:scale(1.13) rotate(-2deg); }
+      .part-chip.merged{ opacity:0; transform:scale(.4); }
+      .plus-sign{ font-size:40px; font-weight:800; color:var(--ink-soft); font-family:"Baloo 2",sans-serif; transition:opacity .4s; }
+      .plus-sign.merged{ opacity:0; }
+      .joined-word{ font-size:clamp(76px,20vw,130px); font-weight:700; color:var(--green-d); line-height:1.35; animation:pop .5s ease; }
+      .join-pic{ font-size:64px; }
+
+      /* ---------- harakaat ---------- */
+      .hark-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+      .hark-cell{ padding:14px 8px; text-align:center; }
+      .hark-cell .mark{ font-size:64px; font-weight:700; color:var(--pink); line-height:1.3; }
+      .hark-cell .hn{ font-size:21px; font-weight:700; }
+      .hark-cell .hd{ font-size:14.5px; color:var(--ink-soft); font-weight:600; line-height:1.7; }
+      .hark-demo{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:8px; }
+      .hark-demo button{
+        font-size:56px; font-weight:700; line-height:1.35; background:var(--bg); border:3px solid var(--line);
+        border-radius:18px; padding:2px 30px 12px; color:var(--ink); min-width:110px; min-height:96px;
+      }
+      .hark-demo button:active{ background:var(--yellow); }
+
+      /* ---------- words ---------- */
+      .cat-tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+      .cat-tab{ border:2px solid var(--line); background:var(--card); border-radius:999px; padding:8px 16px; min-height:46px; font-size:16.5px; font-weight:700; color:var(--ink); }
+      .cat-tab.on{ background:var(--green); border-color:var(--green); color:#fff; }
+      .word-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px; }
+      .word-card{ padding:14px 8px 12px; text-align:center; position:relative; }
+      .word-card .wp{ font-size:58px; line-height:1.25; }
+      .word-card .wp svg{ width:58px; height:58px; }
+      .word-card .ww{ font-size:33px; font-weight:700; line-height:1.5; color:var(--ink); }
+      .word-card.read{ border-color:var(--green); }
+      .word-card.read::after{ content:"⭐"; position:absolute; top:6px; inset-inline-start:8px; font-size:16px; }
+      .mini-play{ width:44px; height:44px; border-radius:50%; border:none; background:var(--sky); color:#fff; font-size:19px; box-shadow:0 3px 0 #1e6f9c; }
+      .mini-play:active{ transform:translateY(2px); box-shadow:none; }
+
+      /* ---------- sentences ---------- */
+      .sent-card{ margin-bottom:12px; text-align:right; }
+      .sent-words{ font-size:clamp(26px,6vw,38px); font-weight:700; line-height:2; }
+      .sent-words .w{ padding:0 6px; border-radius:10px; transition:background .2s; }
+      .sent-words .w.hl{ background:var(--yellow); color:#4a3500; }
+      .sent-emoji{ font-size:40px; }
+      .sent-emoji svg{ width:46px; height:46px; vertical-align:middle; }
+
+      /* ---------- games ---------- */
+      .game-stage{ text-align:center; }
+      .game-q{ font-size:clamp(24px,5.5vw,32px); font-weight:700; line-height:1.8; }
+      .game-big{ font-size:clamp(80px,22vw,130px); font-weight:700; line-height:1.3; color:var(--green-d); }
+      .game-pic{ font-size:100px; line-height:1.2; }
+      .game-pic svg{ width:100px; height:100px; }
+      .opt-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:16px; }
+      .opt-btn{
+        background:var(--card); border:3px solid var(--line); border-radius:20px; min-height:96px; padding:10px;
+        font-size:44px; font-weight:700; color:var(--ink); box-shadow:0 5px 0 rgba(60,40,10,.08); line-height:1.35;
+      }
+      .opt-btn.word{ font-size:32px; }
+      .opt-btn.pic{ font-size:56px; }
+      .opt-btn.right{ background:#d9f6e3; border-color:var(--green); animation:pop .4s ease; }
+      .opt-btn.wrong{ background:#fde3e3; border-color:var(--red); animation:shake .4s ease; }
+      @keyframes shake{ 0%,100%{ transform:translateX(0);} 25%{ transform:translateX(-7px);} 75%{ transform:translateX(7px);} }
+      .score-line{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:8px; }
+      .feedback{ font-size:24px; font-weight:700; min-height:44px; line-height:1.7; }
+      .feedback.good{ color:var(--green-d); } .feedback.bad{ color:var(--red); }
+      .build-area{ min-height:96px; display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap; background:var(--bg); border:2.5px dashed var(--sky); border-radius:18px; padding:10px; margin:14px 0; }
+      .build-area .slot{ font-size:52px; font-weight:700; line-height:1.3; color:var(--green-d); }
+      .build-area .empty-note{ color:var(--ink-soft); font-weight:600; font-size:17px; }
+      .chip-row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+      .letter-chip{
+        font-size:40px; font-weight:700; line-height:1.3; background:var(--card); border:3px solid var(--purple); color:var(--ink);
+        border-radius:16px; padding:2px 20px 8px; min-width:70px; min-height:70px; box-shadow:0 4px 0 rgba(86,61,158,.35);
+      }
+      .letter-chip:active{ transform:translateY(3px); box-shadow:none; }
+      .letter-chip.used{ opacity:.25; pointer-events:none; }
+
+      /* ---------- writing ---------- */
+      .trace-wrap{ position:relative; width:min(340px,86vw); margin:10px auto; aspect-ratio:1; }
+      .trace-letter{
+        position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+        font-size:min(250px,62vw); font-weight:700; color:transparent; line-height:1;
+        -webkit-text-stroke:3px color-mix(in srgb, var(--sky) 55%, transparent);
+        border:3px dashed var(--line); border-radius:24px; background:var(--card); user-select:none;
+      }
+      @media (prefers-color-scheme: dark){ .trace-letter{ -webkit-text-stroke:3px rgba(120,190,235,.6); } }
+      #traceCanvas{ position:absolute; inset:0; width:100%; height:100%; touch-action:none; border-radius:24px; }
+      .copy-word{ font-size:54px; font-weight:700; color:var(--purple); text-align:center; line-height:1.5; }
+
+      /* ---------- parent ---------- */
+      .pin-dots{ display:flex; gap:12px; justify-content:center; margin:16px 0; direction:ltr; }
+      .pin-dots span{ width:20px; height:20px; border-radius:50%; border:3px solid var(--purple); display:inline-block; }
+      .pin-dots span.fill{ background:var(--purple); }
+      .pin-pad{ display:grid; grid-template-columns:repeat(3,76px); gap:10px; justify-content:center; direction:ltr; }
+      .pin-pad button{ height:64px; font-size:26px; font-weight:800; font-family:"Baloo 2",sans-serif; border-radius:18px; border:2px solid var(--line); background:var(--card); color:var(--ink); }
+      .stat-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+      .stat-box{ text-align:center; padding:16px 8px; }
+      .stat-box .num{ font-family:"Baloo 2",sans-serif; font-size:36px; font-weight:800; color:var(--green-d); direction:ltr; }
+      .stat-box .lab{ font-size:15.5px; font-weight:700; color:var(--ink-soft); line-height:1.6; }
+      .week-bars{ display:flex; gap:8px; align-items:flex-end; height:130px; padding:10px 4px 0; direction:ltr; }
+      .week-bars .col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end; }
+      .week-bars .bar{ width:100%; max-width:44px; background:linear-gradient(180deg,var(--sky),var(--green)); border-radius:8px 8px 0 0; min-height:4px; }
+      .week-bars .dl{ font-size:13px; font-weight:700; color:var(--ink-soft); font-family:"Baloo 2",sans-serif; }
+      .diff-list{ display:flex; gap:8px; flex-wrap:wrap; }
+      .diff-chip{ font-size:30px; font-weight:700; background:#fdecec; border:2px solid var(--red); color:var(--ink); border-radius:14px; padding:2px 16px 6px; line-height:1.4; }
+      @media (prefers-color-scheme: dark){ .diff-chip{ background:#3a2430; } }
+
+      /* ---------- confetti & toast ---------- */
+      #confetti{ position:fixed; inset:0; pointer-events:none; z-index:99; overflow:hidden; }
+      .confetti-piece{ position:absolute; top:-20px; width:12px; height:18px; border-radius:3px; animation:fall linear forwards; }
+      @keyframes fall{ to{ transform:translateY(110vh) rotate(720deg); } }
+      #toast{
+        position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(90px); z-index:100;
+        background:var(--green-d); color:#fff; font-weight:700; font-size:18px; padding:12px 26px; border-radius:999px;
+        box-shadow:0 10px 24px rgba(0,0,0,.25); transition:transform .35s ease; max-width:92vw; text-align:center; line-height:1.7;
+      }
+      #toast.show{ transform:translateX(-50%) translateY(0); }
+      .footer-note{ text-align:center; color:var(--ink-soft); font-size:14.5px; margin-top:26px; line-height:1.9; font-weight:600; }
+      @media (prefers-reduced-motion: reduce){
+        *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-in">
+        <div class="brand">
+          <span class="parrot" aria-hidden="true">🦜</span>
+          <h1 class="nastaliq">میری اردو دنیا<small>MERI URDU DUNIYA · CLASS 1</small></h1>
+        </div>
+        <div class="top-actions">
+          <span class="chip" title="ستارے"><span class="star">⭐</span><span id="starCount">0</span></span>
+          <span class="chip" title="سطح" id="levelChip">🌱 نیا سیکھنے والا</span>
+          <button class="icon-btn" id="soundToggle" aria-label="آواز آن / آف">🔊</button>
+          <button class="icon-btn" id="homeBtn" aria-label="ہوم">🏠</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap">
+
+      <!-- ============ HOME ============ -->
+      <section class="view active" id="view-home">
+        <div class="hero">
+          <div class="card hero-main">
+            <h2 class="nastaliq">السلام علیکم، چھوٹے اردو ستارے! 🌟</h2>
+            <p>آؤ مل کر اردو سیکھیں — حروف، جوڑ، الفاظ اور جملے، کھیل کھیل میں!</p>
+            <div class="level-line">
+              <span class="level-badge" id="heroLevel">🌱 سطح ۱: نیا سیکھنے والا</span>
+              <div class="progress-track"><div class="progress-fill" id="heroProgress"></div></div>
+              <span class="level-badge" id="heroPct">0%</span>
+            </div>
+            <div class="level-line" style="margin-top:10px">
+              <span>📚 حروف سیکھے: <b id="heroLetters">0 / 36</b></span>
+              <span>📖 الفاظ پڑھے: <b id="heroWords">0</b></span>
+              <span>⏱️ آج کی مشق: <b id="heroTime">0 منٹ</b></span>
+            </div>
+          </div>
+          <div class="card teacher-card">
+            <div class="teacher-face" aria-hidden="true">🦜</div>
+            <div class="bubble" id="teacherBubble">میں ہوں استاد طوطا! 🦜<br/>آج ہم کون سا سبق سیکھیں؟ نیچے سے چنو!</div>
+            <button class="big-btn sky" id="teacherSpeak">🔊 استاد کی بات سنو</button>
+          </div>
+        </div>
+
+        <div class="card daily-card">
+          <div style="font-size:52px" aria-hidden="true">⏰</div>
+          <div style="flex:1; min-width:200px">
+            <div style="font-size:23px; font-weight:700; line-height:1.6">روز کا ۱۵ منٹ چیلنج</div>
+            <div class="muted" style="font-weight:600" id="dailyStatus">آج کے ۵ چھوٹے کام پورے کرو اور خاص بیج جیتو! 🏅</div>
+            <div class="progress-track" style="background:rgba(0,0,0,.08); margin-top:8px"><div class="progress-fill" id="dailyProgress" style="background:var(--orange)"></div></div>
+          </div>
+          <div class="timer" id="dailyTimer">15:00</div>
+          <button class="big-btn orange" id="dailyStartBtn">▶️ چیلنج شروع کرو</button>
+        </div>
+
+        <nav class="menu-grid" aria-label="اسباق">
+          <button class="menu-card" data-go="alpha"><span class="ic">🔤</span><span class="ur">حروفِ تہجی</span><span class="en">Alphabet</span><span class="tag">ا سے ی تک سارے حروف</span></button>
+          <button class="menu-card" data-go="join"><span class="ic">🧩</span><span class="ur">حروف جوڑنا</span><span class="en">Join Letters</span><span class="tag">ب + ا = با</span></button>
+          <button class="menu-card" data-go="harakaat"><span class="ic">✨</span><span class="ur">حرکات</span><span class="en">Harakaat</span><span class="tag">زبر، زیر، پیش</span></button>
+          <button class="menu-card" data-go="words"><span class="ic">📖</span><span class="ur">الفاظ پڑھنا</span><span class="en">Read Words</span><span class="tag">تصویر کے ساتھ الفاظ</span></button>
+          <button class="menu-card" data-go="sentences"><span class="ic">💬</span><span class="ur">جملے پڑھنا</span><span class="en">Sentences</span><span class="tag">آسان چھوٹے جملے</span></button>
+          <button class="menu-card" data-go="games"><span class="ic">🎮</span><span class="ur">کھیل</span><span class="en">Games</span><span class="tag">۱۰ مزے دار کھیل</span></button>
+          <button class="menu-card" data-go="writing"><span class="ic">✏️</span><span class="ur">لکھنا سیکھو</span><span class="en">Writing</span><span class="tag">انگلی سے لکھو</span></button>
+          <button class="menu-card" data-go="parent"><span class="ic">👨‍👩‍👧</span><span class="ur">والدین کے لیے</span><span class="en">Parents</span><span class="tag">رپورٹ اور پیش رفت</span></button>
+        </nav>
+
+        <div class="card" style="margin-top:16px">
+          <div style="font-size:22px; font-weight:700">🏅 میرے بیج</div>
+          <div class="badges-row" id="badgesRow"></div>
+        </div>
+
+        <p class="footer-note">استاد طوطا کی آواز آپ کے آلے کی اردو آواز استعمال کرتی ہے۔ آواز نہ آئے تو والدین والے حصے میں آواز کی ترکیب دیکھیں۔</p>
+      </section>
+
+      <!-- ============ ALPHABET ============ -->
+      <section class="view" id="view-alpha">
+        <div class="sec-head">
+          <button class="back-btn" data-go="home">⬅ واپس</button>
+          <h2 class="nastaliq">حروفِ تہجی</h2>
+          <span class="sub">کسی حرف پر کلک کرو — اس کی آواز، نام اور مثال سنو!</span>
+        </div>
+        <div class="alpha-grid" id="alphaGrid"></div>
+      </section>
+
+      <!-- ============ LETTER DETAIL ============ -->
+      <section class="view" id="view-letter">
+        <div class="sec-head">
+          <button class="back-btn" data-go="alpha">⬅ سارے حروف</button>
+          <h2 class="nastaliq">حرف سیکھو</h2>
+        </div>
+        <div class="card letter-stage">
+          <div><span class="giant-letter" id="bigLetter">ب</span></div>
+          <div class="letter-name" id="letterName">ب — بے</div>
+          <div><span class="dots-note" id="letterDots"></span></div>
+          <div style="margin-top:14px"><span class="example-pic" id="letterPic"></span></div>
+          <div class="example-word" id="letterWord">بکری</div>
+          <div class="row" style="justify-content:center; margin-top:12px">
+            <button class="big-btn" id="speakLetterBtn">🔊 حرف سنو</button>
+            <button class="big-btn sky" id="speakWordBtn">🔊 مثال سنو</button>
+            <button class="big-btn orange" id="speakSlowBtn">🐢 آہستہ سنو</button>
+            <button class="big-btn pink" id="saidItBtn">🎤 میں نے بولا!</button>
+          </div>
+          <div class="forms-row" id="formsRow"></div>
+          <div class="nav-arrows">
+            <button class="big-btn ghost" id="prevLetterBtn">➡ پچھلا حرف</button>
+            <button class="big-btn ghost" id="traceLetterBtn">✏️ یہ حرف لکھو</button>
+            <button class="big-btn ghost" id="nextLetterBtn">اگلا حرف ⬅</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ JOINING ============ -->
+      <section class="view" id="view-join">
+        <div class="sec-head">
+          <button class="back-btn" data-go="home">⬅ واپس</button>
+          <h2 class="nastaliq">حروف جوڑنا</h2>
+          <span class="sub">حروف مل کر لفظ بناتے ہیں — جادو دیکھو! ✨</span>
+        </div>
+        <div class="lvl-tabs" id="joinTabs"></div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="join-stage" id="joinStage">
+            <div class="muted" style="font-size:19px; font-weight:700">نیچے سے کوئی لفظ چنو، پھر «جوڑو» دباؤ!</div>
+          </div>
+          <div class="row" style="justify-content:center">
+            <button class="big-btn purple" id="joinPlayBtn">🧩 جوڑو!</button>
+            <button class="big-btn sky" id="joinSpeakBtn">🔊 لفظ سنو</button>
+            <button class="big-btn orange" id="joinSlowBtn">🐢 آہستہ سنو</button>
+          </div>
+        </div>
+        <div class="join-list" id="joinList"></div>
+      </section>
+
+      <!-- ============ HARAKAAT ============ -->
+      <section class="view" id="view-harakaat">
+        <div class="sec-head">
+          <button class="back-btn" data-go="home">⬅ واپس</button>
+          <h2 class="nastaliq">حرکات</h2>
+          <span class="sub">چھوٹی نشانیاں آواز بدل دیتی ہیں!</span>
+        </div>
+        <div class="hark-grid" id="harkGrid"></div>
+        <div class="card" style="margin-top:14px; text-align:center">
+          <div style="font-size:22px; font-weight:700" id="harkDemoTitle">ب کے ساتھ سُنو — کسی بٹن کو دباؤ!</div>
+          <div class="hark-demo" id="harkDemo"></div>
+          <p class="muted" style="font-weight:600; margin-bottom:0">زبر سے «اَ» جیسی، زیر سے «اِ» جیسی اور پیش سے «اُ» جیسی آواز آتی ہے۔</p>
+        </div>
+      </section>
+
+      <!-- ============ WORDS ============ -->
+      <section class="view" id="view-words">
+        <div class="sec-head">
+          <button class="back-btn" data-go="home">⬅ واپس</button>
+          <h2 class="nastaliq">الفاظ پڑھنا</h2>
+          <span class="sub">لفظ پر کلک کرو اور زور سے پڑھو!</span>
+        </div>
+        <div class="cat-tabs" id="wordTabs"></div>
+        <div class="word-grid" id="wordGrid"></div>
+      </section>
+
+      <!-- ============ SENTENCES ============ -->
+      <section class="view" id="view-sentences">
+        <div class="sec-head">
+          <button class="back-btn" data-go="home">⬅ واپس</button>
+          <h2 class="nastaliq">جملے پڑھنا</h2>
+          <span class="sub">استاد پڑھے گا، ہر لفظ پیلا ہوگا — ساتھ ساتھ پڑھو!</span>
+        </div>
+        <div id="sentList"></div>
+      </section>
+
+      <!-- ============ GAMES HUB ============ -->
+      <section class="view" id="view-games">
+        <div class="sec-head">
+          <button class="back-btn" data-go="home">⬅ واپس</button>
+          <h2 class="nastaliq">کھیل</h2>
+          <span class="sub">کھیلو، سیکھو اور ستارے جیتو! ⭐</span>
+        </div>
+        <div class="menu-grid" id="gameMenu"></div>
+      </section>
+
+      <!-- ============ GAME PLAY ============ -->
+      <section class="view" id="view-game">
+        <div class="sec-head">
+          <button class="back-btn" data-go="games">⬅ سارے کھیل</button>
+          <h2 class="nastaliq" id="gameTitle">کھیل</h2>
+        </div>
+        <div class="card game-stage">
+          <div class="score-line">
+            <span class="chip">⭐ اسکور: <b id="gameScore">0</b></span>
+            <span class="chip">🔥 سلسلہ: <b id="gameStreak">0</b></span>
+            <span class="chip">🎯 سوال: <b id="gameRound">1 / 10</b></span>
+          </div>
+          <div id="gameBody"></div>
+          <div class="feedback" id="gameFeedback" aria-live="polite"></div>
+          <div class="row" style="justify-content:center">
+            <button class="big-btn sky hidden" id="gameListenBtn">🔊 پھر سنو</button>
+            <button class="big-btn hidden" id="gameNextBtn">اگلا سوال ⬅</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ WRITING ============ -->
+      <section class="view" id="view-writing">
+        <div class="sec-head">
+          <button class="back-btn" data-go="home">⬅ واپس</button>
+          <h2 class="nastaliq">لکھنا سیکھو</h2>
+          <span class="sub">انگلی یا ماؤس سے حرف کے اوپر لکھو!</span>
+        </div>
+        <div class="cat-tabs" id="writeTabs">
+          <button class="cat-tab on" data-wtab="trace">✏️ حرف لکھنا</button>
+          <button class="cat-tab" data-wtab="copy">📝 لفظ نقل کرنا</button>
+          <button class="cat-tab" data-wtab="sheet">🖨️ ورک شیٹ</button>
+        </div>
+
+        <div id="writeTrace">
+          <div class="card" style="text-align:center">
+            <div class="row" style="justify-content:center">
+              <label style="font-weight:700; font-size:18px">حرف چنو:
+                <select id="traceSelect" style="font-size:22px; font-family:inherit; padding:6px 12px; border-radius:12px; border:2px solid var(--line); background:var(--card); color:var(--ink)"></select>
+              </label>
+              <button class="big-btn sky" id="traceSpeakBtn">🔊 حرف سنو</button>
+            </div>
+            <div class="trace-wrap">
+              <div class="trace-letter" id="traceLetterBg">ب</div>
+              <canvas id="traceCanvas" width="680" height="680"></canvas>
+            </div>
+            <div class="row" style="justify-content:center">
+              <button class="big-btn orange" id="traceClearBtn">🧽 صاف کرو</button>
+              <button class="big-btn" id="traceDoneBtn">✔️ ہو گیا!</button>
+              <button class="big-btn ghost" id="traceNextBtn">اگلا حرف ⬅</button>
+            </div>
+            <p class="muted" style="font-weight:600">حرف کی شکل دیکھ کر آہستہ آہستہ اس کے اوپر لکیر کھینچو۔ جڑنے والے حروف اگلے حرف سے مل جاتے ہیں — جیسے ب + ا = با</p>
+          </div>
+        </div>
+
+        <div id="writeCopy" class="hidden">
+          <div class="card" style="text-align:center">
+            <div class="muted" style="font-weight:700; font-size:18px">یہ لفظ دیکھو اور نیچے خود لکھو:</div>
+            <div class="copy-word" id="copyWord">بابا</div>
+            <div class="row" style="justify-content:center">
+              <button class="big-btn sky" id="copySpeakBtn">🔊 لفظ سنو</button>
+              <button class="big-btn ghost" id="copyNewBtn">🔀 دوسرا لفظ</button>
+            </div>
+            <div class="trace-wrap">
+              <div class="trace-letter" style="-webkit-text-stroke:0; font-size:40px; color:var(--ink-soft); align-items:flex-start; padding-top:12px"><span style="font-size:19px; font-weight:600">یہاں لکھو…</span></div>
+              <canvas id="copyCanvas" width="680" height="680"></canvas>
+            </div>
+            <div class="row" style="justify-content:center">
+              <button class="big-btn orange" id="copyClearBtn">🧽 صاف کرو</button>
+              <button class="big-btn" id="copyDoneBtn">✔️ ہو گیا!</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="writeSheet" class="hidden">
+          <div class="card" style="text-align:center">
+            <div style="font-size:52px">🖨️</div>
+            <div style="font-size:23px; font-weight:700; line-height:1.7">پرنٹ ایبل ورک شیٹ</div>
+            <p class="muted" style="font-weight:600">ورک شیٹ ڈاؤن لوڈ کرو، پرنٹ کرو اور پنسل سے حروف کی مشق کرو — سارے ۳۶ حروف، بڑے بڑے خانوں میں۔</p>
+            <button class="big-btn purple" id="sheetDownloadBtn">⬇️ ورک شیٹ ڈاؤن لوڈ کرو</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PARENT ============ -->
+      <section class="view" id="view-parent">
+        <div class="sec-head">
+          <button class="back-btn" data-go="home">⬅ واپس</button>
+          <h2 class="nastaliq">والدین کا حصہ</h2>
+        </div>
+
+        <div class="card center" id="pinCard">
+          <div style="font-size:46px">🔐</div>
+          <div style="font-size:21px; font-weight:700">والدین کے لیے — پن درج کریں</div>
+          <p class="muted" style="font-weight:600; margin:4px 0 0">پہلی بار کا پن: <b>1234</b></p>
+          <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
+          <div class="pin-pad" id="pinPad"></div>
+          <div class="feedback bad" id="pinError" style="min-height:30px; font-size:18px"></div>
+        </div>
+
+        <div id="parentDash" class="hidden">
+          <div class="stat-grid">
+            <div class="card stat-box"><div class="num" id="stLetters">0 / 36</div><div class="lab">حروف سیکھے گئے</div></div>
+            <div class="card stat-box"><div class="num" id="stWords">0</div><div class="lab">الفاظ پڑھے گئے</div></div>
+            <div class="card stat-box"><div class="num" id="stSent">0</div><div class="lab">جملے پڑھے گئے</div></div>
+            <div class="card stat-box"><div class="num" id="stStars">0</div><div class="lab">کل ستارے</div></div>
+            <div class="card stat-box"><div class="num" id="stAcc">—</div><div class="lab">درستگی (کھیل)</div></div>
+            <div class="card stat-box"><div class="num" id="stTime">0</div><div class="lab">آج کی مشق (منٹ)</div></div>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <div style="font-size:21px; font-weight:700">📅 ہفتہ وار رپورٹ — روزانہ مشق کے منٹ</div>
+            <div class="week-bars" id="weekBars"></div>
+            <p class="muted" style="font-weight:600; margin-bottom:0" id="weekNote"></p>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <div style="font-size:21px; font-weight:700">🔁 یہ حروف ابھی مشکل لگتے ہیں — ان کی مشق دوبارہ کریں</div>
+            <div class="diff-list" id="diffList" style="margin-top:10px"></div>
+            <p class="muted" style="font-weight:600; margin-bottom:0">مشکل حرف پر کلک کرنے سے وہ حرف کھل جائے گا تاکہ بچہ دوبارہ مشق کر سکے۔</p>
+          </div>
+
+          <div class="card" style="margin-top:14px">
+            <div style="font-size:21px; font-weight:700">🎯 سبق منتخب کریں</div>
+            <div class="row" style="margin-top:10px">
+              <button class="big-btn ghost" data-go="alpha">🔤 حروفِ تہجی</button>
+              <button class="big-btn ghost" data-go="join">🧩 حروف جوڑنا</button>
+              <button class="big-btn ghost" data-go="harakaat">✨ حرکات</button>
+              <button class="big-btn ghost" data-go="words">📖 الفاظ</button>
+              <button class="big-btn ghost" data-go="sentences">💬 جملے</button>
+              <button class="big-btn ghost" data-go="writing">✏️ لکھنا</button>
+            </div>
+            <div class="row" style="margin-top:14px">
+              <button class="big-btn pink" id="resetBtn">🗑️ ساری پیش رفت صاف کریں</button>
+            </div>
+            <p class="muted" style="font-weight:600; margin-bottom:0">نوٹ: پیش رفت خود بخود محفوظ ہوتی رہتی ہے اور صفحہ بند یا تازہ کرنے پر بھی برقرار رہتی ہے۔ آواز کے لیے آلے میں اردو (ur-PK) آواز ہونا بہتر ہے؛ نہ ہو تو استاد پھر بھی حروف بولنے کی کوشش کرے گا۔</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <div id="confetti" aria-hidden="true"></div>
+    <div id="toast" role="status"></div>
+    <script>
+    'use strict';
+    /* ================= helpers ================= */
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const shuffle = a => { const x = a.slice(); for (let i = x.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [x[i], x[j]] = [x[j], x[i]]; } return x; };
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+    const sample = (a, n, excl) => shuffle(a.filter(x => x !== excl)).slice(0, n);
+    const ANAR_SVG = '<svg viewBox="0 0 100 100" role="img" aria-label="انار"><path d="M38 12 L46 24 L54 24 L62 12 L58 26 L42 26 Z" fill="#b91c1c"/><circle cx="50" cy="60" r="36" fill="#dc2626"/><circle cx="50" cy="60" r="36" fill="none" stroke="#991b1b" stroke-width="3"/><circle cx="38" cy="52" r="6" fill="#fca5a5"/><circle cx="56" cy="46" r="5" fill="#fca5a5"/><circle cx="64" cy="64" r="6" fill="#f87171"/><circle cx="44" cy="72" r="5" fill="#f87171"/><ellipse cx="36" cy="42" rx="10" ry="6" fill="#ffffff" opacity="0.35" transform="rotate(-30 36 42)"/></svg>';
+    function picHTML(pic, cls) { return pic === 'SVG:ANAR' ? ANAR_SVG : '<span class="' + (cls || '') + '">' + pic + '</span>'; }
+
+    /* ================= sound effects (WebAudio) ================= */
+    let audioCtx = null, soundOn = true;
+    function ac() { if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } } if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); return audioCtx; }
+    function tone(freq, t0, dur, type, vol) {
+      const c = ac(); if (!c || !soundOn) return;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      const t = c.currentTime + t0;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.16, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.05);
+    }
+    const sfx = {
+      click() { tone(620, 0, 0.09, 'triangle', 0.1); },
+      good() { tone(523, 0, 0.14); tone(659, 0.1, 0.14); tone(784, 0.2, 0.22); },
+      great() { [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.09, 0.2, 'triangle', 0.15)); },
+      bad() { tone(220, 0, 0.18, 'sine', 0.1); tone(185, 0.14, 0.24, 'sine', 0.1); },
+      pop() { tone(880, 0, 0.07, 'square', 0.06); }
+    };
+
+    /* ================= Urdu voice teacher (Web Speech API) ================= */
+    let urduVoice = null, anyVoice = null;
+    function loadVoices() {
+      if (!('speechSynthesis' in window)) return;
+      const vs = speechSynthesis.getVoices();
+      urduVoice = vs.find(v => /^ur/i.test(v.lang)) || vs.find(v => /urdu/i.test(v.name)) || null;
+      anyVoice = urduVoice || vs.find(v => /^hi/i.test(v.lang)) || vs[0] || null;
+    }
+    if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+    let speakTimer = null;
+    function speak(text, opts) {
+      opts = opts || {};
+      if (!('speechSynthesis' in window) || !soundOn) { if (opts.onend) setTimeout(opts.onend, 350); return; }
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ur-PK';
+      if (urduVoice) u.voice = urduVoice; else if (anyVoice) u.voice = anyVoice;
+      u.rate = opts.slow ? 0.55 : (opts.rate || 0.85);
+      u.pitch = 1.05;
+      if (opts.onend) { u.onend = opts.onend; u.onerror = opts.onend; }
+      speechSynthesis.speak(u);
+    }
+    /* Speak a list of chunks one after another, calling cb(i) as each starts. */
+    function speakSequence(chunks, opts, cb, done) {
+      opts = opts || {};
+      let i = 0;
+      clearTimeout(speakTimer);
+      function next() {
+        if (i >= chunks.length) { if (done) done(); return; }
+        const idx = i; if (cb) cb(idx);
+        const est = Math.max(650, chunks[idx].length * (opts.slow ? 420 : 300));
+        speak(chunks[idx], { slow: opts.slow, onend: () => { } });
+        i++;
+        speakTimer = setTimeout(next, est);
+      }
+      next();
+    }
+
+    /* ================= persistent state (localStorage) ================= */
+    const STORAGE_KEY = 'meriUrduDuniyaProgressV1';
+    let joinCount = 0, writeCount = 0;
+    const state = {
+      stars: 0,
+      lettersLearned: new Set(),
+      letterWrong: {},          // letter -> wrong count (difficult letters)
+      wordsRead: new Set(),
+      sentencesRead: new Set(),
+      gamesPlayed: 0, gameCorrect: 0, gameTotal: 0,
+      badges: new Set(),
+      daily: { date: todayKey(), done: {}, timerLeft: 900, running: false },
+      week: {},                  // dateKey -> practice seconds
+      childName: '',
+      settings: {},
+      sessionStart: Date.now()
+    };
+    function todayKey() { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+    function saveProgress() {
+      try {
+        const data = {
+          version: 1,
+          stars: state.stars,
+          lettersLearned: Array.from(state.lettersLearned),
+          letterWrong: state.letterWrong,
+          wordsRead: Array.from(state.wordsRead),
+          sentencesRead: Array.from(state.sentencesRead),
+          gamesPlayed: state.gamesPlayed, gameCorrect: state.gameCorrect, gameTotal: state.gameTotal,
+          badges: Array.from(state.badges),
+          daily: { date: state.daily.date, done: state.daily.done, timerLeft: state.daily.timerLeft },
+          week: state.week,
+          joinCount: joinCount, writeCount: writeCount,
+          childName: state.childName || '',
+          settings: { soundOn: soundOn },
+          soundOn: soundOn,
+          savedAt: Date.now()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) { }
+    }
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        if (!d || typeof d !== 'object') return;
+        if (typeof d.stars === 'number') state.stars = d.stars;
+        if (Array.isArray(d.lettersLearned)) state.lettersLearned = new Set(d.lettersLearned);
+        if (d.letterWrong && typeof d.letterWrong === 'object') state.letterWrong = d.letterWrong;
+        if (Array.isArray(d.wordsRead)) state.wordsRead = new Set(d.wordsRead);
+        if (Array.isArray(d.sentencesRead)) state.sentencesRead = new Set(d.sentencesRead);
+        if (typeof d.gamesPlayed === 'number') state.gamesPlayed = d.gamesPlayed;
+        if (typeof d.gameCorrect === 'number') state.gameCorrect = d.gameCorrect;
+        if (typeof d.gameTotal === 'number') state.gameTotal = d.gameTotal;
+        if (Array.isArray(d.badges)) state.badges = new Set(d.badges);
+        if (d.week && typeof d.week === 'object') state.week = d.week;
+        if (d.daily && typeof d.daily === 'object') {
+          if (d.daily.date === todayKey()) {
+            state.daily = { date: d.daily.date, done: (d.daily.done && typeof d.daily.done === 'object') ? d.daily.done : {}, timerLeft: (typeof d.daily.timerLeft === 'number' ? d.daily.timerLeft : 900), running: false };
+          } else {
+            state.daily = { date: todayKey(), done: {}, timerLeft: 900, running: false };
+          }
+        }
+        if (typeof d.joinCount === 'number') joinCount = d.joinCount;
+        if (typeof d.writeCount === 'number') writeCount = d.writeCount;
+        if (typeof d.childName === 'string') state.childName = d.childName;
+        if (d.settings && typeof d.settings === 'object') state.settings = d.settings;
+        const savedSound = (d.settings && typeof d.settings.soundOn === 'boolean') ? d.settings.soundOn : (typeof d.soundOn === 'boolean' ? d.soundOn : null);
+        if (savedSound !== null) soundOn = savedSound;
+      } catch (e) { }
+    }
+    loadProgress();
+    if (typeof state.week[todayKey()] !== 'number') state.week[todayKey()] = 0;
+    setInterval(() => { const k = todayKey(); if (state.daily.date !== k) { state.daily = { date: k, done: {}, timerLeft: 900, running: state.daily.running }; } state.week[k] = (state.week[k] || 0) + 5; saveProgress(); if (typeof refreshHUD === 'function') { /* HUD refresh is handled by callers; keep timer cheap */ } }, 5000);
+    window.addEventListener('beforeunload', saveProgress);
+    window.addEventListener('pagehide', saveProgress);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveProgress(); });
+
+    const LEVELS = [
+      { min: 0, name: 'نیا سیکھنے والا', icon: '🌱' },
+      { min: 15, name: 'حرف شناس', icon: '🔤' },
+      { min: 40, name: 'لفظ خوان', icon: '📖' },
+      { min: 80, name: 'جملہ ماہر', icon: '💬' },
+      { min: 130, name: 'اردو ستارہ', icon: '🌟' }
+    ];
+    function levelOf() { let cur = LEVELS[0], idx = 0; LEVELS.forEach((l, i) => { if (state.stars >= l.min) { cur = l; idx = i; } }); const next = LEVELS[idx + 1]; const pct = next ? Math.round(((state.stars - cur.min) / (next.min - cur.min)) * 100) : 100; return { cur, idx, next, pct }; }
+
+    const BADGES = [
+      { id: 'first', icon: '🎈', label: 'پہلا حرف', test: () => state.lettersLearned.size >= 1 },
+      { id: 'alpha10', icon: '🔤', label: '۱۰ حروف', test: () => state.lettersLearned.size >= 10 },
+      { id: 'alphaAll', icon: '🏆', label: 'سارے حروف', test: () => state.lettersLearned.size >= LETTERS.length },
+      { id: 'joiner', icon: '🧩', label: 'جوڑ ماہر', test: () => state.badges.has('join5') },
+      { id: 'words20', icon: '📚', label: '۲۰ الفاظ', test: () => state.wordsRead.size >= 20 },
+      { id: 'sent', icon: '💬', label: 'جملہ خوان', test: () => state.sentencesRead.size >= 3 },
+      { id: 'gamer', icon: '🎮', label: 'کھیل چیمپئن', test: () => state.gameCorrect >= 25 },
+      { id: 'writer', icon: '✏️', label: 'لکھاری', test: () => state.badges.has('wrote3') },
+      { id: 'daily', icon: '🏅', label: 'روز کا چیلنج', test: () => Object.keys(state.daily.done).length >= 5 }
+    ];
+    function awardStars(n, why) {
+      state.stars += n;
+      checkBadges();
+      refreshHUD();
+      saveProgress();
+      if (why) toast('⭐ +' + toUrduNum(n) + ' — ' + why);
+    }
+    function checkBadges() {
+      if (joinCount >= 5) state.badges.add('join5');
+      if (writeCount >= 3) state.badges.add('wrote3');
+      saveProgress();
+      BADGES.forEach(b => {
+        if (!state.badges.has(b.id) && b.test()) {
+          state.badges.add(b.id);
+          setTimeout(() => { toast('🏅 نیا بیج ملا: ' + b.label + '!'); sfx.great(); confetti(26); }, 400);
+        }
+      });
+      renderBadges();
+      saveProgress();
+    }
+    function toUrduNum(n) { return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+    /* ================= toast & confetti ================= */
+    let toastTimer = null;
+    function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600); }
+    function confetti(n) {
+      const box = $('#confetti'); const colors = ['#f59e0b', '#ec5f8f', '#2f9fd8', '#1f9d63', '#7c5cd6', '#ffd93d'];
+      for (let i = 0; i < (n || 30); i++) {
+        const p = document.createElement('div'); p.className = 'confetti-piece';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.background = pick(colors);
+        p.style.animationDuration = (1.4 + Math.random() * 1.4) + 's';
+        p.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+        box.appendChild(p); setTimeout(() => p.remove(), 3200);
+      }
+    }
+    function celebrate(msg) { sfx.great(); confetti(36); if (msg) toast(msg); }
+
+    /* ================= DATA: alphabet ================= */
+    const LETTERS = [
+      { ch: 'ا', name: 'الف', word: 'انار', pic: 'SVG:ANAR', dots: 'کوئی نقطہ نہیں', forms: ['ا', 'ـا', 'ا', 'ـا'] },
+      { ch: 'ب', name: 'بے', word: 'بکری', pic: '🐐', dots: 'ایک نقطہ نیچے', forms: ['بـ', 'ـبـ', 'ـب', 'ب'] },
+      { ch: 'پ', name: 'پے', word: 'پتنگ', pic: '🪁', dots: 'تین نقطے نیچے', forms: ['پـ', 'ـپـ', 'ـپ', 'پ'] },
+      { ch: 'ت', name: 'تے', word: 'تتلی', pic: '🦋', dots: 'دو نقطے اوپر', forms: ['تـ', 'ـتـ', 'ـت', 'ت'] },
+      { ch: 'ٹ', name: 'ٹے', word: 'ٹماٹر', pic: '🍅', dots: 'اوپر چھوٹا ط (ٹوپی)', forms: ['ٹـ', 'ـٹـ', 'ـٹ', 'ٹ'] },
+      { ch: 'ث', name: 'ثے', word: 'ثمر', pic: '🍓', dots: 'تین نقطے اوپر', forms: ['ثـ', 'ـثـ', 'ـث', 'ث'] },
+      { ch: 'ج', name: 'جیم', word: 'جہاز', pic: '✈️', dots: 'ایک نقطہ بیچ میں', forms: ['جـ', 'ـجـ', 'ـج', 'ج'] },
+      { ch: 'چ', name: 'چے', word: 'چابی', pic: '🔑', dots: 'تین نقطے نیچے', forms: ['چـ', 'ـچـ', 'ـچ', 'چ'] },
+      { ch: 'ح', name: 'حے', word: 'حلوہ', pic: '🍮', dots: 'کوئی نقطہ نہیں', forms: ['حـ', 'ـحـ', 'ـح', 'ح'] },
+      { ch: 'خ', name: 'خے', word: 'خربوزہ', pic: '🍈', dots: 'ایک نقطہ اوپر', forms: ['خـ', 'ـخـ', 'ـخ', 'خ'] },
+      { ch: 'د', name: 'دال', word: 'درخت', pic: '🌳', dots: 'کوئی نقطہ نہیں', forms: ['د', 'ـد', 'د', 'ـد'] },
+      { ch: 'ڈ', name: 'ڈال', word: 'ڈبہ', pic: '📦', dots: 'اوپر چھوٹا ط (ٹوپی)', forms: ['ڈ', 'ـڈ', 'ڈ', 'ـڈ'] },
+      { ch: 'ذ', name: 'ذال', word: 'ذائقہ', pic: '🍲', dots: 'ایک نقطہ اوپر', forms: ['ذ', 'ـذ', 'ذ', 'ـذ'] },
+      { ch: 'ر', name: 'رے', word: 'ریل', pic: '🚆', dots: 'کوئی نقطہ نہیں', forms: ['ر', 'ـر', 'ر', 'ـر'] },
+      { ch: 'ڑ', name: 'ڑے', word: 'پہاڑ', pic: '🏔️', dots: 'اوپر چھوٹا ط (ٹوپی)', forms: ['ڑ', 'ـڑ', 'ڑ', 'ـڑ'] },
+      { ch: 'ز', name: 'زے', word: 'زیتون', pic: '🫒', dots: 'ایک نقطہ اوپر', forms: ['ز', 'ـز', 'ز', 'ـز'] },
+      { ch: 'ژ', name: 'ژے', word: 'ژالہ', pic: '🌨️', dots: 'تین نقطے اوپر', forms: ['ژ', 'ـژ', 'ژ', 'ـژ'] },
+      { ch: 'س', name: 'سین', word: 'سیب', pic: '🍎', dots: 'کوئی نقطہ نہیں', forms: ['سـ', 'ـسـ', 'ـس', 'س'] },
+      { ch: 'ش', name: 'شین', word: 'شیر', pic: '🦁', dots: 'تین نقطے اوپر', forms: ['شـ', 'ـشـ', 'ـش', 'ش'] },
+      { ch: 'ص', name: 'صواد', word: 'صابن', pic: '🧼', dots: 'کوئی نقطہ نہیں', forms: ['صـ', 'ـصـ', 'ـص', 'ص'] },
+      { ch: 'ض', name: 'ضواد', word: 'ضیافت', pic: '🍽️', dots: 'ایک نقطہ اوپر', forms: ['ضـ', 'ـضـ', 'ـض', 'ض'] },
+      { ch: 'ط', name: 'طوے', word: 'طوطا', pic: '🦜', dots: 'کوئی نقطہ نہیں', forms: ['طـ', 'ـطـ', 'ـط', 'ط'] },
+      { ch: 'ظ', name: 'ظوے', word: 'ظروف', pic: '🥣', dots: 'ایک نقطہ اوپر', forms: ['ظـ', 'ـظـ', 'ـظ', 'ظ'] },
+      { ch: 'ع', name: 'عین', word: 'عینک', pic: '👓', dots: 'کوئی نقطہ نہیں', forms: ['عـ', 'ـعـ', 'ـع', 'ع'] },
+      { ch: 'غ', name: 'غین', word: 'غبارہ', pic: '🎈', dots: 'ایک نقطہ اوپر', forms: ['غـ', 'ـغـ', 'ـغ', 'غ'] },
+      { ch: 'ف', name: 'فے', word: 'فوارہ', pic: '⛲', dots: 'ایک نقطہ اوپر', forms: ['فـ', 'ـفـ', 'ـف', 'ف'] },
+      { ch: 'ق', name: 'قاف', word: 'قلم', pic: '✏️', dots: 'دو نقطے اوپر', forms: ['قـ', 'ـقـ', 'ـق', 'ق'] },
+      { ch: 'ک', name: 'کاف', word: 'کتاب', pic: '📖', dots: 'کوئی نقطہ نہیں', forms: ['کـ', 'ـکـ', 'ـک', 'ک'] },
+      { ch: 'گ', name: 'گاف', word: 'گائے', pic: '🐄', dots: 'اوپر دو لکیریں', forms: ['گـ', 'ـگـ', 'ـگ', 'گ'] },
+      { ch: 'ل', name: 'لام', word: 'لیموں', pic: '🍋', dots: 'کوئی نقطہ نہیں', forms: ['لـ', 'ـلـ', 'ـل', 'ل'] },
+      { ch: 'م', name: 'میم', word: 'مرغی', pic: '🐔', dots: 'کوئی نقطہ نہیں', forms: ['مـ', 'ـمـ', 'ـم', 'م'] },
+      { ch: 'ن', name: 'نون', word: 'ناشپاتی', pic: '🍐', dots: 'ایک نقطہ اوپر', forms: ['نـ', 'ـنـ', 'ـن', 'ن'] },
+      { ch: 'و', name: 'واؤ', word: 'وردی', pic: '👕', dots: 'کوئی نقطہ نہیں', forms: ['و', 'ـو', 'و', 'ـو'] },
+      { ch: 'ہ', name: 'ہے', word: 'ہاتھی', pic: '🐘', dots: 'کوئی نقطہ نہیں', forms: ['ہـ', 'ـہـ', 'ـہ', 'ہ'] },
+      { ch: 'ء', name: 'ہمزہ', word: 'چائے', pic: '☕', dots: 'چھوٹی سی نشانی — چائے میں آتا ہے', forms: ['ء', 'ء', 'ء', 'ء'] },
+      { ch: 'ی', name: 'یے', word: 'یخنی', pic: '🍜', dots: 'دو نقطے نیچے', forms: ['یـ', 'ـیـ', 'ـی', 'ی'] }
+    ];
+    const FORM_LABELS = ['شروع میں', 'بیچ میں', 'آخر میں', 'اکیلا'];
+
+    /* ================= DATA: joining ================= */
+    const JOINS = [
+      { lvl: 1, parts: ['ب', 'ا'], word: 'با', pic: '' },
+      { lvl: 1, parts: ['م', 'ا'], word: 'ما', pic: '' },
+      { lvl: 1, parts: ['ا', 'م'], word: 'ام', pic: '' },
+      { lvl: 1, parts: ['ا', 'ب'], word: 'اب', pic: '' },
+      { lvl: 1, parts: ['د', 'ل'], word: 'دل', pic: '❤️' },
+      { lvl: 1, parts: ['گ', 'ل'], word: 'گل', pic: '🌹' },
+      { lvl: 1, parts: ['ن', 'ل'], word: 'نل', pic: '🚰' },
+      { lvl: 1, parts: ['پ', 'ا'], word: 'پا', pic: '' },
+      { lvl: 2, parts: ['ا', 'ا', 'م'], word: 'آم', pic: '🥭' },
+      { lvl: 2, parts: ['ن', 'ا', 'ن'], word: 'نان', pic: '🫓' },
+      { lvl: 2, parts: ['د', 'ا', 'ل'], word: 'دال', pic: '🍲' },
+      { lvl: 2, parts: ['س', 'ی', 'ب'], word: 'سیب', pic: '🍎' },
+      { lvl: 2, parts: ['ش', 'ی', 'ر'], word: 'شیر', pic: '🦁' },
+      { lvl: 2, parts: ['م', 'و', 'ر'], word: 'مور', pic: '🦚' },
+      { lvl: 3, parts: ['ک', 'ت', 'ا', 'ب'], word: 'کتاب', pic: '📖' },
+      { lvl: 3, parts: ['ت', 'ت', 'ل', 'ی'], word: 'تتلی', pic: '🦋' },
+      { lvl: 3, parts: ['ب', 'ک', 'ر', 'ی'], word: 'بکری', pic: '🐐' },
+      { lvl: 3, parts: ['پ', 'ا', 'ن', 'ی'], word: 'پانی', pic: '💧' },
+      { lvl: 3, parts: ['م', 'ر', 'غ', 'ی'], word: 'مرغی', pic: '🐔' },
+      { lvl: 4, parts: ['با', 'با'], word: 'بابا', pic: '👨' },
+      { lvl: 4, parts: ['ما', 'ما'], word: 'ماما', pic: '👩' },
+      { lvl: 4, parts: ['دا', 'دا'], word: 'دادا', pic: '👴' },
+      { lvl: 4, parts: ['نا', 'نا'], word: 'نانا', pic: '👴' },
+      { lvl: 4, parts: ['چا', 'چا'], word: 'چاچا', pic: '🧔' }
+    ];
+    const JOIN_LEVEL_NAMES = { 1: 'سطح ۱ · دو حروف', 2: 'سطح ۲ · تین حروف', 3: 'سطح ۳ · چار حروف', 4: 'سطح ۴ · پورے الفاظ' };
+
+    /* ================= DATA: harakaat ================= */
+    const HARAKAAT = [
+      { name: 'زبر', mark: 'بَ', say: 'بَ', desc: 'حرف کے اوپر چھوٹی لکیر — «اَ» جیسی آواز' },
+      { name: 'زیر', mark: 'بِ', say: 'بِ', desc: 'حرف کے نیچے چھوٹی لکیر — «اِ» جیسی آواز' },
+      { name: 'پیش', mark: 'بُ', say: 'بُ', desc: 'حرف کے اوپر چھوٹا واؤ — «اُ» جیسی آواز' },
+      { name: 'جزم', mark: 'بْ', say: 'بْ', desc: 'آواز یہیں رک جاتی ہے — جیسے «ابْ»' },
+      { name: 'تشدید', mark: 'بّ', say: 'بّ', desc: 'حرف زور سے، دو بار جیسا بولا جاتا ہے' },
+      { name: 'مد', mark: 'آ', say: 'آ', desc: 'الف کے اوپر مد — آواز لمبی کھینچو: «آآ»' }
+    ];
+
+    /* ================= DATA: words ================= */
+    const WORD_CATS = [
+      { id: 'two', name: 'دو حرفی الفاظ', words: [
+        { w: 'آم', pic: '🥭' }, { w: 'دل', pic: '❤️' }, { w: 'گل', pic: '🌹' }, { w: 'نل', pic: '🚰' }, { w: 'اب', pic: '👨' }, { w: 'ام', pic: '👩' } ] },
+      { id: 'three', name: 'تین حرفی الفاظ', words: [
+        { w: 'سیب', pic: '🍎' }, { w: 'شیر', pic: '🦁' }, { w: 'نان', pic: '🫓' }, { w: 'دال', pic: '🍲' }, { w: 'مور', pic: '🦚' }, { w: 'گھر', pic: '🏠' } ] },
+      { id: 'four', name: 'چار حرفی الفاظ', words: [
+        { w: 'کتاب', pic: '📖' }, { w: 'تتلی', pic: '🦋' }, { w: 'بکری', pic: '🐐' }, { w: 'پانی', pic: '💧' }, { w: 'مرغی', pic: '🐔' } ] },
+      { id: 'family', name: 'خاندان', words: [
+        { w: 'بابا', pic: '👨' }, { w: 'ماما', pic: '👩' }, { w: 'دادا', pic: '👴' }, { w: 'دادی', pic: '👵' }, { w: 'بھائی', pic: '👦' }, { w: 'بہن', pic: '👧' } ] },
+      { id: 'animals', name: 'جانور', words: [
+        { w: 'بلی', pic: '🐱' }, { w: 'کتا', pic: '🐶' }, { w: 'گائے', pic: '🐄' }, { w: 'شیر', pic: '🦁' }, { w: 'ہاتھی', pic: '🐘' }, { w: 'بندر', pic: '🐵' } ] },
+      { id: 'fruits', name: 'پھل', words: [
+        { w: 'سیب', pic: '🍎' }, { w: 'کیلا', pic: '🍌' }, { w: 'آم', pic: '🥭' }, { w: 'انگور', pic: '🍇' }, { w: 'انار', pic: 'SVG:ANAR' }, { w: 'مالٹا', pic: '🍊' } ] },
+      { id: 'colours', name: 'رنگ', words: [
+        { w: 'لال', pic: '🔴' }, { w: 'نیلا', pic: '🔵' }, { w: 'سبز', pic: '🟢' }, { w: 'پیلا', pic: '🟡' }, { w: 'کالا', pic: '⚫' }, { w: 'سفید', pic: '⚪' } ] },
+      { id: 'body', name: 'جسم کے حصے', words: [
+        { w: 'آنکھ', pic: '👁️' }, { w: 'ناک', pic: '👃' }, { w: 'منہ', pic: '👄' }, { w: 'ہاتھ', pic: '✋' }, { w: 'کان', pic: '👂' }, { w: 'سر', pic: '🧑' } ] },
+      { id: 'school', name: 'اسکول کی چیزیں', words: [
+        { w: 'کتاب', pic: '📖' }, { w: 'قلم', pic: '✏️' }, { w: 'بستہ', pic: '🎒' }, { w: 'کرسی', pic: '🪑' }, { w: 'کاپی', pic: '📓' }, { w: 'گھڑی', pic: '🕐' } ] }
+    ];
+    const ALL_WORDS = WORD_CATS.reduce((acc, c) => acc.concat(c.words), []);
+
+    /* ================= DATA: sentences ================= */
+    const SENTENCES = [
+      { s: 'یہ آم ہے۔', pic: '🥭' },
+      { s: 'یہ انار ہے۔', pic: 'SVG:ANAR' },
+      { s: 'بابا آئے۔', pic: '👨' },
+      { s: 'ماما پانی دیں۔', pic: '👩' },
+      { s: 'علی کھیلتا ہے۔', pic: '🧒' },
+      { s: 'یہ میرا گھر ہے۔', pic: '🏠' },
+      { s: 'یہ بلی ہے۔', pic: '🐱' },
+      { s: 'میں اسکول جاتا ہوں۔', pic: '🎒' }
+    ];
+
+    /* ================= DATA: games list ================= */
+    const GAMES = [
+      { id: 'findLetter', icon: '🔍', ur: 'حرف ڈھونڈو', en: 'Find the Letter', tag: 'آواز سن کر حرف چنو' },
+      { id: 'listenWord', icon: '👂', ur: 'سنو اور چنو', en: 'Listen & Pick', tag: 'لفظ سن کر صحیح چنو' },
+      { id: 'matchPic', icon: '🖼️', ur: 'تصویر کا حرف', en: 'Letter for Picture', tag: 'تصویر کس حرف سے شروع؟' },
+      { id: 'wordPic', icon: '📖', ur: 'لفظ پڑھو، تصویر چنو', en: 'Read & Pick Picture', tag: 'لفظ پڑھ کر تصویر ملاؤ' },
+      { id: 'dots', icon: '⁘', ur: 'نقطے پہچانو', en: 'Dot Detective', tag: 'ب، پ، ت، ٹ میں فرق' },
+      { id: 'missing', icon: '❓', ur: 'گمشدہ حرف', en: 'Missing Letter', tag: 'لفظ پورا کرو' },
+      { id: 'joinGame', icon: '🧩', ur: 'حروف جوڑو', en: 'Join the Letters', tag: 'جوڑا ہوا لفظ چنو' },
+      { id: 'arrange', icon: '🔀', ur: 'حروف ترتیب دو', en: 'Arrange Letters', tag: 'حروف لگا کر لفظ بناؤ' },
+      { id: 'completeSent', icon: '💬', ur: 'جملہ مکمل کرو', en: 'Complete Sentence', tag: 'خالی جگہ بھرو' },
+      { id: 'spelling', icon: '🏆', ur: 'ہجے چیلنج', en: 'Spelling Challenge', tag: 'سن کر ہجے بناؤ' }
+    ];
+    const SENT_FILL = [
+      { s: ['یہ', '___', 'ہے۔'], ans: 'آم', opts: ['آم', 'بلی', 'کتاب'], pic: '🥭' },
+      { s: ['یہ', '___', 'ہے۔'], ans: 'بلی', opts: ['بلی', 'سیب', 'قلم'], pic: '🐱' },
+      { s: ['بابا', '___', '۔'], ans: 'آئے', opts: ['آئے', 'پانی', 'گھر'], pic: '👨' },
+      { s: ['یہ', 'میرا', '___', 'ہے۔'], ans: 'گھر', opts: ['گھر', 'شیر', 'نان'], pic: '🏠' },
+      { s: ['ماما', '___', 'دیں۔'], ans: 'پانی', opts: ['پانی', 'کتاب', 'بکری'], pic: '💧' }
+    ];
+</script>
+    <script>
+    'use strict';
+    /* ================= navigation ================= */
+    const TEACHER_LINES = [
+      'میں ہوں استاد طوطا! 🦜 آج ہم کون سا سبق سیکھیں؟ نیچے سے چنو!',
+      'شاباش! اردو سیکھنا بہت آسان اور مزے دار ہے!',
+      'حروف جوڑنا سب سے مزے دار ہے — ب جمع ا برابر با!',
+      'روز تھوڑی سی مشق، اور تم اردو ستارہ بن جاؤ گے! 🌟',
+      'غلطی ہو جائے تو کوئی بات نہیں — پھر کوشش کرو!'
+    ];
+    function go(view) {
+      $$('.view').forEach(v => v.classList.remove('active'));
+      $('#view-' + view).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      sfx.click();
+      if (view === 'home') { $('#teacherBubble').textContent = pick(TEACHER_LINES); refreshHUD(); }
+      if (view === 'parent') renderParent();
+    }
+    document.addEventListener('click', e => {
+      const t = e.target.closest('[data-go]');
+      if (t) go(t.dataset.go);
+    });
+    $('#homeBtn').addEventListener('click', () => go('home'));
+    $('#soundToggle').addEventListener('click', function () {
+      soundOn = !soundOn;
+      this.textContent = soundOn ? '🔊' : '🔇';
+      if (!soundOn && 'speechSynthesis' in window) speechSynthesis.cancel();
+      saveProgress();
+      toast(soundOn ? 'آواز آن ہو گئی 🔊' : 'آواز آف ہو گئی 🔇');
+    });
+    $('#teacherSpeak').addEventListener('click', () => speak($('#teacherBubble').textContent.replace(/🦜|🌟/g, '')));
+
+    /* ================= HUD ================= */
+    function refreshHUD() {
+      $('#starCount').textContent = state.stars;
+      const lv = levelOf();
+      $('#levelChip').textContent = lv.cur.icon + ' ' + lv.cur.name;
+      $('#heroLevel').textContent = lv.cur.icon + ' سطح ' + toUrduNum(lv.idx + 1) + ': ' + lv.cur.name + (lv.next ? ' — اگلی سطح ' + toUrduNum(lv.next.min - state.stars) + ' ستاروں پر' : ' — سب سے اونچی سطح!');
+      $('#heroProgress').style.width = lv.pct + '%';
+      $('#heroPct').textContent = toUrduNum(lv.pct) + '%';
+      $('#heroLetters').textContent = toUrduNum(state.lettersLearned.size) + ' / ' + toUrduNum(LETTERS.length);
+      $('#heroWords').textContent = toUrduNum(state.wordsRead.size);
+      const mins = Math.floor((state.week[todayKey()] || 0) / 60);
+      $('#heroTime').textContent = toUrduNum(mins) + ' منٹ';
+      const doneN = Object.keys(state.daily.done).length;
+      $('#dailyProgress').style.width = (doneN / 5 * 100) + '%';
+      $('#dailyStatus').textContent = doneN >= 5 ? 'آج کا چیلنج مکمل! تم چیمپئن ہو! 🏆' : 'آج کے ' + toUrduNum(doneN) + ' / ۵ کام ہو گئے — باقی پورے کرو اور خاص بیج جیتو! 🏅';
+    }
+    function renderBadges() {
+      $('#badgesRow').innerHTML = BADGES.map(b =>
+        '<div class="badge-item' + (state.badges.has(b.id) ? ' got' : '') + '"><div class="bi">' + b.icon + '</div><div class="bl">' + b.label + '</div></div>').join('');
+    }
+    function dailyDone(key) {
+      if (state.daily.date !== todayKey()) { state.daily = { date: todayKey(), done: {}, timerLeft: 900, running: state.daily.running }; }
+      if (!state.daily.done[key]) {
+        state.daily.done[key] = true;
+        const n = Object.keys(state.daily.done).length;
+        saveProgress();
+        if (n >= 5) { awardStars(10, 'روز کا چیلنج مکمل!'); celebrate(); }
+        else toast('✅ روز کے چیلنج کا ایک کام ہو گیا! (' + toUrduNum(n) + '/۵)');
+        refreshHUD();
+        saveProgress();
+      }
+    }
+
+    /* ================= daily 15-min challenge ================= */
+    let dailyInt = null;
+    $('#dailyStartBtn').addEventListener('click', () => {
+      if (state.daily.date !== todayKey()) { state.daily = { date: todayKey(), done: {}, timerLeft: 900, running: false }; }
+      if (state.daily.running) { toast('چیلنج پہلے سے چل رہا ہے — اسباق کھیلو اور کام پورے کرو! ⏰'); return; }
+      state.daily.running = true;
+      saveProgress();
+      $('#dailyStartBtn').textContent = '⏰ چیلنج چل رہا ہے…';
+      speak('روز کا پندرہ منٹ چیلنج شروع! پانچ چھوٹے کام پورے کرو۔');
+      toast('چیلنج شروع! حروف، جوڑ، الفاظ، جملے اور ایک کھیل کھیلو 🎯');
+      clearInterval(dailyInt);
+      dailyInt = setInterval(() => {
+        if (state.daily.timerLeft > 0) state.daily.timerLeft--;
+        saveProgress();
+        const m = Math.floor(state.daily.timerLeft / 60), s = state.daily.timerLeft % 60;
+        $('#dailyTimer').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        if (state.daily.timerLeft <= 0) {
+          clearInterval(dailyInt); state.daily.running = false; saveProgress();
+          $('#dailyStartBtn').textContent = '▶️ چیلنج شروع کرو';
+          $('#dailyTimer').textContent = '15:00';
+          if (Object.keys(state.daily.done).length >= 5) celebrate('⏰ وقت ختم — اور چیلنج بھی مکمل! شاباش! 🏆');
+          else toast('⏰ ۱۵ منٹ ہو گئے! آج جتنا سیکھا، بہت خوب! کل پھر کھیلیں گے۔');
+        }
+      }, 1000);
+    });
+
+    /* ================= alphabet ================= */
+    let curLetter = 0;
+    function renderAlpha() {
+      $('#alphaGrid').innerHTML = LETTERS.map((L, i) =>
+        '<button class="alpha-cell' + (state.lettersLearned.has(L.ch) ? ' learned' : '') + '" data-letter="' + i + '">' +
+        '<span class="L">' + L.ch + '</span><span class="n">' + L.name + '</span></button>').join('');
+      $$('#alphaGrid [data-letter]').forEach(b => b.addEventListener('click', () => openLetter(+b.dataset.letter)));
+    }
+    function openLetter(i) {
+      curLetter = i;
+      const L = LETTERS[i];
+      $('#bigLetter').textContent = L.ch;
+      $('#letterName').textContent = L.ch + ' — ' + L.name;
+      $('#letterDots').textContent = '🔎 نقطے: ' + L.dots;
+      $('#letterPic').innerHTML = picHTML(L.pic);
+      $('#letterWord').textContent = L.word;
+      $('#formsRow').innerHTML = L.forms.map((f, k) =>
+        '<div class="form-box"><div class="f">' + f + '</div><div class="fl">' + FORM_LABELS[k] + '</div></div>').join('');
+      go('letter');
+      speak(L.name + '۔ ' + L.word);
+      if (!state.lettersLearned.has(L.ch)) {
+        state.lettersLearned.add(L.ch);
+        awardStars(2, 'نیا حرف سیکھا: ' + L.name);
+        dailyDone('letter');
+        renderAlpha();
+      }
+    }
+    $('#speakLetterBtn').addEventListener('click', () => { const L = LETTERS[curLetter]; speak(L.ch + '۔ ' + L.name); sfx.pop(); });
+    $('#speakWordBtn').addEventListener('click', () => { const L = LETTERS[curLetter]; speak(L.name + ' سے ' + L.word); });
+    $('#speakSlowBtn').addEventListener('click', () => { const L = LETTERS[curLetter]; speak(L.name + '۔ ' + L.word, { slow: true }); });
+    $('#saidItBtn').addEventListener('click', function () {
+      const L = LETTERS[curLetter];
+      speak('اب تم بولو: ' + L.name);
+      this.textContent = '🌟 شاباش! +۱';
+      awardStars(1, 'خود بول کر مشق کی!');
+      sfx.good();
+      setTimeout(() => this.textContent = '🎤 میں نے بولا!', 1600);
+    });
+    $('#prevLetterBtn').addEventListener('click', () => openLetter((curLetter - 1 + LETTERS.length) % LETTERS.length));
+    $('#nextLetterBtn').addEventListener('click', () => openLetter((curLetter + 1) % LETTERS.length));
+    $('#traceLetterBtn').addEventListener('click', () => { go('writing'); setTraceLetter(curLetter); });
+
+    /* ================= joining lab ================= */
+    let joinLvl = 1, curJoin = null, joinBusy = false;
+    function renderJoinTabs() {
+      $('#joinTabs').innerHTML = [1, 2, 3, 4].map(l =>
+        '<button class="lvl-tab' + (l === joinLvl ? ' on' : '') + '" data-jl="' + l + '">' + JOIN_LEVEL_NAMES[l] + '</button>').join('');
+      $$('#joinTabs [data-jl]').forEach(b => b.addEventListener('click', () => { joinLvl = +b.dataset.jl; curJoin = null; renderJoinTabs(); renderJoinList(); $('#joinStage').innerHTML = '<div class="muted" style="font-size:19px; font-weight:700">نیچے سے کوئی لفظ چنو، پھر «جوڑو» دباؤ!</div>'; }));
+    }
+    function renderJoinList() {
+      $('#joinList').innerHTML = JOINS.filter(j => j.lvl === joinLvl).map(j => {
+        const idx = JOINS.indexOf(j);
+        return '<div class="card join-item"><div><div class="jw">' + j.word + '</div><div class="jp">' + j.parts.join(' + ') + '</div></div>' +
+          (j.pic ? '<span style="font-size:34px">' + j.pic + '</span>' : '') +
+          '<button class="mini-play play" data-join="' + idx + '" aria-label="جوڑ کر دیکھو">▶️</button></div>';
+      }).join('');
+      $$('#joinList [data-join]').forEach(b => b.addEventListener('click', () => { selectJoin(JOINS[+b.dataset.join]); }));
+    }
+    function selectJoin(j) {
+      curJoin = j; joinBusy = false;
+      const stage = $('#joinStage');
+      stage.innerHTML = '<div class="parts-row">' + j.parts.map((p, i) =>
+        '<span class="part-chip" data-part="' + i + '">' + p + '</span>' + (i < j.parts.length - 1 ? '<span class="plus-sign">+</span>' : '')).join('') + '</div>' +
+        '<div class="muted" style="font-weight:700">«جوڑو» دباؤ اور جادو دیکھو!</div>';
+      sfx.pop();
+      speakSequence(j.parts, {}, null, null);
+      $$('#joinStage .part-chip').forEach((c, i) => setTimeout(() => c.classList.add('speaking'), 150 + i * 500));
+      setTimeout(() => $$('#joinStage .part-chip').forEach(c => c.classList.remove('speaking')), 150 + j.parts.length * 500 + 350);
+    }
+    function playJoin() {
+      if (!curJoin || joinBusy) { if (!curJoin) toast('پہلے نیچے سے کوئی لفظ چنو! 👇'); return; }
+      joinBusy = true;
+      const j = curJoin;
+      const chips = $$('#joinStage .part-chip'), pluses = $$('#joinStage .plus-sign');
+      let step = 0;
+      speakSequence(j.parts, {}, idx => {
+        chips.forEach(c => c.classList.remove('speaking'));
+        if (chips[idx]) chips[idx].classList.add('speaking');
+      }, () => {
+        setTimeout(() => {
+          chips.forEach(c => { c.classList.remove('speaking'); c.classList.add('merged'); });
+          pluses.forEach(p => p.classList.add('merged'));
+          setTimeout(() => {
+            $('#joinStage').innerHTML = '<div class="joined-word">' + j.word + '</div>' +
+              (j.pic ? '<div class="join-pic">' + j.pic + '</div>' : '') +
+              '<div style="font-size:21px; font-weight:700">' + j.parts.join(' + ') + ' = ' + j.word + '</div>';
+            speak(j.word);
+            sfx.great(); confetti(18);
+            joinCount++;
+            awardStars(2, 'لفظ جوڑا: ' + j.word);
+            dailyDone('join');
+            checkBadges();
+            joinBusy = false;
+          }, 850);
+        }, 350);
+      });
+    }
+    $('#joinPlayBtn').addEventListener('click', playJoin);
+    $('#joinSpeakBtn').addEventListener('click', () => { if (curJoin) speak(curJoin.word); else toast('پہلے لفظ چنو! 👇'); });
+    $('#joinSlowBtn').addEventListener('click', () => {
+      if (!curJoin) { toast('پہلے لفظ چنو! 👇'); return; }
+      speakSequence(curJoin.parts.concat([curJoin.word]), { slow: true }, null, null);
+    });
+
+    /* ================= harakaat ================= */
+    function renderHarakaat() {
+      $('#harkGrid').innerHTML = HARAKAAT.map((h, i) =>
+        '<button class="card hark-cell" data-hark="' + i + '"><div class="mark">' + h.mark + '</div><div class="hn">' + h.name + '</div><div class="hd">' + h.desc + '</div></button>').join('');
+      $$('#harkGrid [data-hark]').forEach(b => b.addEventListener('click', () => {
+        const h = HARAKAAT[+b.dataset.hark];
+        speak(h.name + '۔ ' + h.say);
+        sfx.pop();
+        $('#harkDemoTitle').textContent = h.name + ' — اب ان کو سنو اور دہراؤ:';
+      }));
+      const demoLetters = ['بَ', 'بِ', 'بُ', 'کَ', 'کِ', 'کُ', 'مَ', 'مِ', 'مُ', 'سَ', 'سِ', 'سُ'];
+      $('#harkDemo').innerHTML = demoLetters.map(d => '<button data-demo="' + d + '">' + d + '</button>').join('');
+      $$('#harkDemo [data-demo]').forEach(b => b.addEventListener('click', () => { speak(b.dataset.demo); sfx.pop(); awardStars(0); }));
+    }
+
+    /* ================= words ================= */
+    let wordCat = 'two';
+    function renderWordTabs() {
+      $('#wordTabs').innerHTML = WORD_CATS.map(c =>
+        '<button class="cat-tab' + (c.id === wordCat ? ' on' : '') + '" data-wc="' + c.id + '">' + c.name + '</button>').join('');
+      $$('#wordTabs [data-wc]').forEach(b => b.addEventListener('click', () => { wordCat = b.dataset.wc; renderWordTabs(); renderWords(); }));
+    }
+    function renderWords() {
+      const cat = WORD_CATS.find(c => c.id === wordCat);
+      $('#wordGrid').innerHTML = cat.words.map(wd =>
+        '<div class="card word-card' + (state.wordsRead.has(wd.w) ? ' read' : '') + '" data-word="' + wd.w + '">' +
+        '<div class="wp">' + picHTML(wd.pic) + '</div><div class="ww">' + wd.w + '</div>' +
+        '<button class="mini-play" aria-label="سنو">🔊</button></div>').join('');
+      $$('#wordGrid [data-word]').forEach(card => card.addEventListener('click', () => {
+        const w = card.dataset.word;
+        speak(w);
+        sfx.pop();
+        if (!state.wordsRead.has(w)) {
+          state.wordsRead.add(w);
+          card.classList.add('read');
+          awardStars(1, 'لفظ پڑھا: ' + w);
+          dailyDone('word');
+        }
+      }));
+    }
+
+    /* ================= sentences ================= */
+    function renderSentences() {
+      $('#sentList').innerHTML = SENTENCES.map((sn, i) =>
+        '<div class="card sent-card"><div class="row" style="justify-content:space-between">' +
+        '<span class="sent-emoji">' + picHTML(sn.pic) + '</span>' +
+        '<span class="row"><button class="big-btn" data-sent="' + i + '">🔊 سنو اور پڑھو</button>' +
+        '<button class="big-btn orange" data-sentslow="' + i + '">🐢 آہستہ</button></span></div>' +
+        '<div class="sent-words" id="sent-' + i + '">' + sn.s.replace(/۔$/, '').split(' ').map(w => '<span class="w">' + w + '</span>').join(' ') + '<span class="w">۔</span></div></div>').join('');
+      $$('#sentList [data-sent]').forEach(b => b.addEventListener('click', () => playSentence(+b.dataset.sent, false)));
+      $$('#sentList [data-sentslow]').forEach(b => b.addEventListener('click', () => playSentence(+b.dataset.sentslow, true)));
+    }
+    function playSentence(i, slow) {
+      const sn = SENTENCES[i];
+      const words = sn.s.replace(/۔$/, '').split(' ');
+      const spans = $$('#sent-' + i + ' .w');
+      spans.forEach(sp => sp.classList.remove('hl'));
+      speakSequence(words, { slow }, idx => {
+        spans.forEach(sp => sp.classList.remove('hl'));
+        if (spans[idx]) spans[idx].classList.add('hl');
+      }, () => {
+        setTimeout(() => { spans.forEach(sp => sp.classList.remove('hl')); speak(sn.s, { slow }); }, 250);
+        if (!state.sentencesRead.has(sn.s)) {
+          state.sentencesRead.add(sn.s);
+          awardStars(3, 'جملہ پڑھا!');
+          dailyDone('sentence');
+        }
+      });
+    }
+</script>
+    <script>
+    'use strict';
+    /* ================= games ================= */
+    let game = null;
+    function renderGameMenu() {
+      $('#gameMenu').innerHTML = GAMES.map(g =>
+        '<button class="menu-card" data-game="' + g.id + '"><span class="ic">' + g.icon + '</span><span class="ur">' + g.ur + '</span><span class="en">' + g.en + '</span><span class="tag">' + g.tag + '</span></button>').join('');
+      $$('#gameMenu [data-game]').forEach(b => b.addEventListener('click', () => startGame(b.dataset.game)));
+    }
+    function startGame(id) {
+      const def = GAMES.find(g => g.id === id);
+      game = { id, score: 0, streak: 0, round: 0, total: 10, locked: false, listenText: null };
+      $('#gameTitle').textContent = def.icon + ' ' + def.ur;
+      go('game');
+      state.gamesPlayed++;
+      saveProgress();
+      nextRound();
+    }
+    function updateGameHUD() {
+      $('#gameScore').textContent = game.score;
+      $('#gameStreak').textContent = game.streak;
+      $('#gameRound').textContent = Math.min(game.round, game.total) + ' / ' + game.total;
+      $('#gameNextBtn').classList.add('hidden');
+      $('#gameListenBtn').classList.toggle('hidden', !game.listenText);
+    }
+    $('#gameListenBtn').addEventListener('click', () => { if (game && game.listenText) speak(game.listenText); });
+    $('#gameNextBtn').addEventListener('click', () => { sfx.click(); nextRound(); });
+    function feedbackGood() {
+      const msgs = ['شاباش! 🌟', 'بہت خوب! 🎉', 'واہ! تم تو ستارے ہو! ⭐', 'زبردست! 👏', 'کمال کر دیا! 🥳'];
+      $('#gameFeedback').textContent = pick(msgs);
+      $('#gameFeedback').className = 'feedback good';
+    }
+    function feedbackBad(correctText) {
+      $('#gameFeedback').textContent = 'کوئی بات نہیں! صحیح جواب: ' + correctText + ' — اگلی بار ضرور آئے گا! 💪';
+      $('#gameFeedback').className = 'feedback bad';
+    }
+    function answer(isRight, correctText, letterForDifficulty) {
+      if (!game || game.locked) return;
+      game.locked = true;
+      state.gameTotal++;
+      if (letterForDifficulty) {
+        if (isRight) { /* keep record */ }
+        else state.letterWrong[letterForDifficulty] = (state.letterWrong[letterForDifficulty] || 0) + 1;
+      }
+      if (isRight) {
+        game.score += 10; game.streak++; state.gameCorrect++;
+        feedbackGood(); sfx.good();
+        if (game.streak > 0 && game.streak % 5 === 0) confetti(24);
+        awardStars(1);
+      } else {
+        game.streak = 0;
+        feedbackBad(correctText); sfx.bad();
+      }
+      dailyDone('game');
+      checkBadges();
+      saveProgress();
+      updateGameHUD();
+      if (game.round >= game.total) {
+        $('#gameNextBtn').textContent = '🏁 نتیجہ دیکھو';
+      } else {
+        $('#gameNextBtn').textContent = 'اگلا سوال ⬅';
+      }
+      $('#gameNextBtn').classList.remove('hidden');
+    }
+    function finishGame() {
+      const pct = Math.round(game.score / (game.total * 10) * 100);
+      $('#gameBody').innerHTML = '<div class="game-pic">🏆</div>' +
+        '<div class="game-q">کھیل ختم! تمہارا اسکور: ' + toUrduNum(game.score) + '</div>' +
+        '<div style="font-size:52px">' + (pct >= 80 ? '⭐⭐⭐' : pct >= 50 ? '⭐⭐' : '⭐') + '</div>' +
+        '<p class="muted" style="font-weight:700">' + (pct >= 80 ? 'واہ! تم اردو چیمپئن ہو!' : pct >= 50 ? 'بہت اچھا کھیلا! تھوڑی اور مشق کرو۔' : 'اچھا کھیلا! مشق سے اور بہتر ہوگا۔') + '</p>' +
+        '<div class="row" style="justify-content:center"><button class="big-btn" id="againBtn">🔁 پھر کھیلو</button><button class="big-btn ghost" data-go="games">🎮 سارے کھیل</button></div>';
+      $('#gameFeedback').textContent = '';
+      $('#gameNextBtn').classList.add('hidden');
+      $('#gameListenBtn').classList.add('hidden');
+      celebrate();
+      $('#againBtn').addEventListener('click', () => startGame(game.id));
+    }
+    function optGrid(items, cls, onPick) {
+      return '<div class="opt-grid">' + items.map((it, i) =>
+        '<button class="opt-btn ' + (cls || '') + '" data-opt="' + i + '">' + it.label + '</button>').join('') + '</div>';
+    }
+    function bindOpts(items, correctIdx, correctText, letterKey) {
+      $$('#gameBody [data-opt]').forEach(b => b.addEventListener('click', () => {
+        if (game.locked) return;
+        const i = +b.dataset.opt;
+        const right = i === correctIdx;
+        b.classList.add(right ? 'right' : 'wrong');
+        if (!right) { const cb = $$('#gameBody [data-opt]')[correctIdx]; if (cb) cb.classList.add('right'); }
+        answer(right, correctText, letterKey);
+      }));
+    }
+    const SPLITTABLE = ['سیب', 'شیر', 'نان', 'دال', 'مور', 'کتاب', 'تتلی', 'بکری', 'پانی', 'مرغی', 'بابا', 'ماما', 'دل', 'گل', 'نل', 'آم', 'قلم'];
+    function lettersOf(w) { return Array.from(w); }
+
+    function nextRound() {
+      if (!game) return;
+      if (game.round >= game.total) { finishGame(); return; }
+      game.round++;
+      game.locked = false;
+      game.listenText = null;
+      $('#gameFeedback').textContent = '';
+      const body = $('#gameBody');
+      const id = game.id;
+
+      if (id === 'findLetter') {
+        const L = pick(LETTERS);
+        const opts = shuffle([L].concat(sample(LETTERS, 3, L)));
+        game.listenText = L.name;
+        body.innerHTML = '<div class="game-q">🔊 سنو! کون سا حرف بولا گیا؟</div>' +
+          '<button class="big-btn sky" id="gSpeak">🔊 پھر سنو</button>' +
+          optGrid(opts.map(o => ({ label: o.ch })), '', null);
+        $('#gSpeak').addEventListener('click', () => speak(L.name));
+        speak(L.name);
+        bindOpts(opts, opts.indexOf(L), L.ch + ' (' + L.name + ')', L.ch);
+      }
+      else if (id === 'listenWord') {
+        const w = pick(ALL_WORDS);
+        const opts = shuffle([w].concat(sample(ALL_WORDS, 3, w)));
+        game.listenText = w.w;
+        body.innerHTML = '<div class="game-q">👂 سنو! کون سا لفظ بولا گیا؟</div>' +
+          '<button class="big-btn sky" id="gSpeak">🔊 پھر سنو</button>' +
+          optGrid(opts.map(o => ({ label: o.w })), 'word', null);
+        $('#gSpeak').addEventListener('click', () => speak(w.w));
+        speak(w.w);
+        bindOpts(opts, opts.indexOf(w), w.w, null);
+      }
+      else if (id === 'matchPic') {
+        const L = pick(LETTERS.filter(x => x.pic !== 'SVG:ANAR'));
+        const opts = shuffle([L].concat(sample(LETTERS, 3, L)));
+        body.innerHTML = '<div class="game-q">یہ تصویر کس حرف سے شروع ہوتی ہے؟</div>' +
+          '<div class="game-pic">' + L.pic + '</div><div class="game-q">' + L.word + '</div>' +
+          optGrid(opts.map(o => ({ label: o.ch })), '', null);
+        speak(L.word + ' کس حرف سے شروع ہوتا ہے؟');
+        bindOpts(opts, opts.indexOf(L), L.ch + ' (' + L.name + ')', L.ch);
+      }
+      else if (id === 'wordPic') {
+        const w = pick(ALL_WORDS.filter(x => x.pic !== 'SVG:ANAR'));
+        const opts = shuffle([w].concat(sample(ALL_WORDS.filter(x => x.pic !== 'SVG:ANAR'), 3, w)));
+        body.innerHTML = '<div class="game-q">لفظ پڑھو اور اس کی تصویر چنو:</div>' +
+          '<div class="game-big">' + w.w + '</div>' +
+          optGrid(opts.map(o => ({ label: o.pic })), 'pic', null);
+        speak(w.w);
+        bindOpts(opts, opts.indexOf(w), w.w + ' ' + w.pic, null);
+      }
+      else if (id === 'dots') {
+        const fam = [
+          { ch: 'ب', name: 'بے — ایک نقطہ نیچے' }, { ch: 'پ', name: 'پے — تین نقطے نیچے' },
+          { ch: 'ت', name: 'تے — دو نقطے اوپر' }, { ch: 'ٹ', name: 'ٹے — اوپر چھوٹا ط' },
+          { ch: 'ث', name: 'ثے — تین نقطے اوپر' }, { ch: 'ن', name: 'نون — ایک نقطہ اوپر' },
+          { ch: 'چ', name: 'چے — تین نقطے نیچے' }, { ch: 'ج', name: 'جیم — نقطہ بیچ میں' },
+          { ch: 'خ', name: 'خے — ایک نقطہ اوپر' }, { ch: 'ز', name: 'زے — ایک نقطہ اوپر' }
+        ];
+        const t = pick(fam);
+        const opts = shuffle([t].concat(sample(fam, 3, t)));
+        body.innerHTML = '<div class="game-q">🔎 ' + t.name + '<br/>کون سا حرف صحیح ہے؟</div>' +
+          optGrid(opts.map(o => ({ label: o.ch })), '', null);
+        speak(t.name.split('—')[0]);
+        bindOpts(opts, opts.indexOf(t), t.ch, t.ch);
+      }
+      else if (id === 'missing') {
+        const w = pick(SPLITTABLE);
+        const chars = lettersOf(w);
+        const missIdx = Math.floor(Math.random() * chars.length);
+        const missing = chars[missIdx];
+        const shown = chars.map((c, i) => i === missIdx ? '؟' : c).join(' ');
+        const opts = shuffle([{ ch: missing }].concat(sample(LETTERS, 3, LETTERS.find(l => l.ch === missing)).map(l => ({ ch: l.ch }))));
+        body.innerHTML = '<div class="game-q">لفظ پورا کرو — کون سا حرف غائب ہے؟</div>' +
+          '<div class="game-big">' + shown + '</div>' +
+          '<button class="big-btn sky" id="gSpeak">🔊 لفظ سنو</button>' +
+          optGrid(opts.map(o => ({ label: o.ch })), '', null);
+        $('#gSpeak').addEventListener('click', () => speak(w));
+        speak(w);
+        bindOpts(opts, opts.findIndex(o => o.ch === missing), w, missing);
+      }
+      else if (id === 'joinGame') {
+        const j = pick(JOINS);
+        const others = sample(JOINS.filter(x => x.word !== j.word), 3);
+        const opts = shuffle([j].concat(others));
+        body.innerHTML = '<div class="game-q">حروف جوڑو! <b>' + j.parts.join(' + ') + '</b> = ؟</div>' +
+          (j.pic ? '<div class="game-pic">' + j.pic + '</div>' : '') +
+          optGrid(opts.map(o => ({ label: o.word })), 'word', null);
+        speak(j.parts.join('، ') + ' مل کر کیا بنے گا؟');
+        bindOpts(opts, opts.indexOf(j), j.word, null);
+      }
+      else if (id === 'arrange' || id === 'spelling') {
+        const timed = id === 'spelling';
+        const w = pick(SPLITTABLE);
+        const chars = lettersOf(w);
+        const scrambled = shuffle(chars.map((c, i) => ({ c, i })));
+        let built = [];
+        body.innerHTML = '<div class="game-q">' + (timed ? '🏆 سنو اور حروف لگا کر ہجے بناؤ:' : 'حروف کو صحیح ترتیب سے لگاؤ:') + '</div>' +
+          '<button class="big-btn sky" id="gSpeak">🔊 لفظ سنو</button>' +
+          '<div class="build-area" id="buildArea"><span class="empty-note">یہاں لفظ بنے گا…</span></div>' +
+          '<div class="chip-row" id="chipRow">' + scrambled.map((s, k) => '<button class="letter-chip" data-chip="' + k + '" data-ci="' + s.i + '">' + s.c + '</button>').join('') + '</div>' +
+          '<div class="row" style="justify-content:center; margin-top:12px"><button class="big-btn orange" id="buildClear">🧽 صاف کرو</button></div>';
+        game.listenText = w;
+        $('#gSpeak').addEventListener('click', () => speak(w));
+        speak(w);
+        const render = () => {
+          $('#buildArea').innerHTML = built.length ? built.map(b => '<span class="slot">' + b.c + '</span>').join('') : '<span class="empty-note">یہاں لفظ بنے گا…</span>';
+        };
+        $$('#chipRow [data-chip]').forEach(chip => chip.addEventListener('click', () => {
+          if (game.locked) return;
+          chip.classList.add('used');
+          built.push({ c: chip.textContent, ci: +chip.dataset.ci, chip });
+          sfx.pop(); render();
+          if (built.length === chars.length) {
+            const ok = built.map(b => b.ci).join(',') === chars.map((_, i) => i).join(',');
+            answer(ok, w, null);
+            if (ok) speak(w);
+          }
+        }));
+        $('#buildClear').addEventListener('click', () => {
+          if (game.locked) return;
+          built = [];
+          $$('#chipRow [data-chip]').forEach(c => c.classList.remove('used'));
+          render();
+        });
+      }
+      else if (id === 'completeSent') {
+        const t = pick(SENT_FILL);
+        const opts = shuffle(t.opts.map(o => ({ label: o })));
+        body.innerHTML = '<div class="game-q">جملہ مکمل کرو:</div>' +
+          '<div class="game-pic">' + t.pic + '</div>' +
+          '<div class="game-q" style="font-size:clamp(28px,7vw,42px)">' + t.s.join(' ') + '</div>' +
+          optGrid(opts, 'word', null);
+        speak(t.s.join(' ').replace('___', 'خالی جگہ'));
+        bindOpts(opts, t.opts.indexOf(t.ans), t.ans, null);
+      }
+      updateGameHUD();
+    }
+
+    /* ================= writing ================= */
+    function setupCanvas(canvasId) {
+      const cv = document.getElementById(canvasId);
+      const ctx = cv.getContext('2d');
+      ctx.lineWidth = 13; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--purple').trim() || '#7c5cd6';
+      let drawing = false, last = null;
+      function pos(e) {
+        const r = cv.getBoundingClientRect();
+        const p = e.touches ? e.touches[0] : e;
+        return { x: (p.clientX - r.left) * (cv.width / r.width), y: (p.clientY - r.top) * (cv.height / r.height) };
+      }
+      function start(e) { drawing = true; last = pos(e); e.preventDefault(); }
+      function move(e) {
+        if (!drawing) return;
+        const p = pos(e);
+        ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+        last = p; e.preventDefault();
+      }
+      function end() { drawing = false; }
+      cv.addEventListener('mousedown', start); cv.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+      cv.addEventListener('touchstart', start, { passive: false }); cv.addEventListener('touchmove', move, { passive: false }); cv.addEventListener('touchend', end);
+      return { clear() { ctx.clearRect(0, 0, cv.width, cv.height); } };
+    }
+    let traceCtl = null, copyCtl = null, traceIdx = 1;
+    function setTraceLetter(i) {
+      traceIdx = i;
+      $('#traceLetterBg').textContent = LETTERS[i].ch;
+      $('#traceSelect').value = String(i);
+      if (traceCtl) traceCtl.clear();
+    }
+    let copyWordCur = 'بابا';
+    function newCopyWord() {
+      copyWordCur = pick(['بابا', 'ماما', 'کتاب', 'سیب', 'پانی', 'تتلی', 'بکری', 'گھر', 'نانا', 'دادا']);
+      $('#copyWord').textContent = copyWordCur;
+      if (copyCtl) copyCtl.clear();
+    }
+    $$('#writeTabs [data-wtab]').forEach(b => b.addEventListener('click', () => {
+      $$('#writeTabs [data-wtab]').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      $('#writeTrace').classList.toggle('hidden', b.dataset.wtab !== 'trace');
+      $('#writeCopy').classList.toggle('hidden', b.dataset.wtab !== 'copy');
+      $('#writeSheet').classList.toggle('hidden', b.dataset.wtab !== 'sheet');
+      sfx.click();
+    }));
+    $('#sheetDownloadBtn').addEventListener('click', () => {
+      const cells = LETTERS.map(L => '<div class="cell"><div class="big">' + L.ch + '</div><div class="lines"><span></span><span></span><span></span></div><div class="nm">' + L.name + ' — ' + L.word + '</div></div>').join('');
+      const html = '<!doctype html><html lang="ur" dir="rtl"><head><meta charset="utf-8"><title>اردو ورک شیٹ — میری اردو دنیا</title>' +
+        '<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@500;700&display=swap" rel="stylesheet">' +
+        '<style>body{font-family:"Noto Naskh Arabic",serif;margin:24px}h1{text-align:center}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.cell{border:2px solid #999;border-radius:12px;padding:10px;text-align:center;page-break-inside:avoid}.big{font-size:74px;font-weight:700;color:#bbb;line-height:1.3}.lines span{display:block;border-bottom:2px dashed #bbb;height:34px;margin-top:8px}.nm{font-size:15px;margin-top:6px}</style></head>' +
+        '<body><h1>میری اردو دنیا — حروف کی مشق</h1><p style="text-align:center">نام: ____________ &nbsp; تاریخ: ____________</p><div class="grid">' + cells + '</div></body></html>';
+      const blob = new Blob([html], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'urdu-worksheet.html';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      awardStars(2, 'ورک شیٹ ڈاؤن لوڈ کی!');
+      toast('ورک شیٹ ڈاؤن لوڈ ہو گئی — پرنٹ کر کے پنسل سے مشق کرو! 🖨️');
+    });
+
+    /* ================= parent dashboard ================= */
+    let pinEntry = '';
+    function renderPinPad() {
+      $('#pinPad').innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9, '⌫', 0, '✔'].map(k =>
+        '<button data-pin="' + k + '">' + k + '</button>').join('');
+      $$('#pinPad [data-pin]').forEach(b => b.addEventListener('click', () => {
+        const k = b.dataset.pin;
+        sfx.click();
+        if (k === '⌫') pinEntry = pinEntry.slice(0, -1);
+        else if (k === '✔') { checkPin(); return; }
+        else if (pinEntry.length < 4) pinEntry += k;
+        $$('#pinDots span').forEach((d, i) => d.classList.toggle('fill', i < pinEntry.length));
+        $('#pinError').textContent = '';
+        if (pinEntry.length === 4) checkPin();
+      }));
+    }
+    function checkPin() {
+      if (pinEntry === '1234') {
+        $('#pinCard').classList.add('hidden');
+        $('#parentDash').classList.remove('hidden');
+        renderParentStats();
+        speak('خوش آمدید');
+      } else {
+        $('#pinError').textContent = 'غلط پن — دوبارہ کوشش کریں';
+        pinEntry = '';
+        $$('#pinDots span').forEach(d => d.classList.remove('fill'));
+        sfx.bad();
+      }
+    }
+    function renderParent() {
+      if (!$('#parentDash').classList.contains('hidden')) renderParentStats();
+    }
+    function renderParentStats() {
+      $('#stLetters').textContent = state.lettersLearned.size + ' / ' + LETTERS.length;
+      $('#stWords').textContent = state.wordsRead.size;
+      $('#stSent').textContent = state.sentencesRead.size;
+      $('#stStars').textContent = state.stars;
+      $('#stAcc').textContent = state.gameTotal ? Math.round(state.gameCorrect / state.gameTotal * 100) + '%' : '—';
+      $('#stTime').textContent = Math.floor((state.week[todayKey()] || 0) / 60);
+      const dayNames = ['اتوار', 'پیر', 'منگل', 'بدھ', 'جمعرات', 'جمعہ', 'ہفتہ'];
+      let bars = '', totalWeek = 0;
+      const days = [];
+      for (let d = 6; d >= 0; d--) { const dt = new Date(); dt.setDate(dt.getDate() - d); days.push(dt); }
+      const maxMin = Math.max(15, ...days.map(dt => Math.floor((state.week[dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate()] || 0) / 60)));
+      days.forEach(dt => {
+        const key = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
+        const mins = Math.floor((state.week[key] || 0) / 60);
+        totalWeek += mins;
+        bars += '<div class="col"><div class="bar" style="height:' + Math.max(4, mins / maxMin * 88) + 'px" title="' + mins + ' منٹ"></div><div class="dl">' + mins + 'm</div><div class="dl">' + dayNames[dt.getDay()] + '</div></div>';
+      });
+      $('#weekBars').innerHTML = bars;
+      $('#weekNote').textContent = 'اس ہفتے کل مشق: ' + toUrduNum(totalWeek) + ' منٹ · روزانہ ہدف: ۱۵ منٹ · پڑھنے کی رفتار: ' + (state.gameTotal ? 'کھیلوں میں درستگی ' + toUrduNum(Math.round(state.gameCorrect / state.gameTotal * 100)) + '%' : 'ابھی کھیل نہیں کھیلے گئے') + ' · الفاظ پڑھے: ' + toUrduNum(state.wordsRead.size);
+      const diff = Object.keys(state.letterWrong).filter(k => state.letterWrong[k] > 0).sort((a, b) => state.letterWrong[b] - state.letterWrong[a]).slice(0, 10);
+      $('#diffList').innerHTML = diff.length ? diff.map(ch => {
+        const idx = LETTERS.findIndex(l => l.ch === ch);
+        return '<button class="diff-chip" data-diff="' + idx + '">' + ch + ' <small style="font-size:14px">(' + toUrduNum(state.letterWrong[ch]) + ' غلطی)</small></button>';
+      }).join('') : '<span class="muted" style="font-weight:700">ابھی کوئی مشکل حرف نہیں — شاباش! 🌟 کھیل کھیلنے پر مشکل حروف یہاں نظر آئیں گے۔</span>';
+      $$('#diffList [data-diff]').forEach(b => b.addEventListener('click', () => openLetter(+b.dataset.diff)));
+    }
+    $('#resetBtn').addEventListener('click', () => {
+      state.stars = 0; state.lettersLearned.clear(); state.letterWrong = {}; state.wordsRead.clear();
+      state.sentencesRead.clear(); state.gamesPlayed = 0; state.gameCorrect = 0; state.gameTotal = 0; state.badges.clear();
+      state.daily = { date: todayKey(), done: {}, timerLeft: 900, running: false }; state.week = {}; state.week[todayKey()] = 0; joinCount = 0; writeCount = 0;
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) { }
+      saveProgress();
+      const dt = $('#dailyTimer'); if (dt) dt.textContent = '15:00';
+      const db = $('#dailyStartBtn'); if (db) db.textContent = '▶️ چیلنج شروع کرو';
+      renderAlpha(); renderWords(); refreshHUD(); renderParentStats();
+      toast('ساری پیش رفت صاف ہو گئی — نئی شروعات! 🌱');
+    });
+
+    /* ================= init ================= */
+    renderAlpha();
+    renderJoinTabs(); renderJoinList();
+    renderHarakaat();
+    renderWordTabs(); renderWords();
+    renderSentences();
+    renderGameMenu();
+    renderBadges();
+    renderPinPad();
+    refreshHUD();
+    /* restore saved settings & daily timer on load */
+    $('#soundToggle').textContent = soundOn ? '🔊' : '🔇';
+    (function () { const tl = (typeof state.daily.timerLeft === 'number' ? state.daily.timerLeft : 900); const m = Math.floor(tl / 60), s = tl % 60; $('#dailyTimer').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0'); })();
+    saveProgress();
+    $('#traceSelect').innerHTML = LETTERS.map((L, i) => '<option value="' + i + '">' + L.ch + ' — ' + L.name + '</option>').join('');
+    traceCtl = setupCanvas('traceCanvas');
+    copyCtl = setupCanvas('copyCanvas');
+    setTraceLetter(1);
+    newCopyWord();
+    $('#traceSelect').addEventListener('change', e => setTraceLetter(+e.target.value));
+    $('#traceSpeakBtn').addEventListener('click', () => speak(LETTERS[traceIdx].name));
+    $('#traceClearBtn').addEventListener('click', () => { traceCtl.clear(); sfx.click(); });
+    $('#traceNextBtn').addEventListener('click', () => setTraceLetter((traceIdx + 1) % LETTERS.length));
+    $('#traceDoneBtn').addEventListener('click', () => {
+      writeCount++; awardStars(2, 'حرف لکھا: ' + LETTERS[traceIdx].name); sfx.good(); confetti(14); checkBadges();
+    });
+    $('#copySpeakBtn').addEventListener('click', () => speak(copyWordCur));
+    $('#copyNewBtn').addEventListener('click', newCopyWord);
+    $('#copyClearBtn').addEventListener('click', () => { copyCtl.clear(); sfx.click(); });
+    $('#copyDoneBtn').addEventListener('click', () => {
+      writeCount++; awardStars(2, 'لفظ نقل کیا: ' + copyWordCur); sfx.good(); confetti(14); checkBadges();
+    });
+    setTimeout(() => speak('السلام علیکم! میری اردو دنیا میں خوش آمدید۔'), 700);
+</script>
+  </body>
+</html>
