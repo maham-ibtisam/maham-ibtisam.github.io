@@ -1,0 +1,1620 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Maths Adventure – Little Genius</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --sky:#7ec8f7; --sky2:#bfe7ff; --ink:#22304a; --ink-soft:#4a5a75;
+        --card:#ffffff; --card-soft:#f4f9ff;
+        --sun:#ffb703; --coral:#ff6b6b; --pink:#ff8fab; --teal:#2ec4b6;
+        --green:#4cc94c; --grape:#7b5ea7; --orange:#fb8500; --blue:#4361ee;
+        --shadow:0 8px 0 rgba(34,48,74,.12), 0 18px 34px rgba(34,48,74,.14);
+        --radius:26px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --sky:#1d2b4d; --sky2:#27396b; --ink:#f2f6ff; --ink-soft:#c3d2ee;
+          --card:#2a3a63; --card-soft:#33477a;
+          --shadow:0 8px 0 rgba(0,0,0,.25), 0 18px 34px rgba(0,0,0,.35);
+        }
+      }
+      *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+      html,body{ margin:0; padding:0; }
+      body{
+        font-family:"Nunito",system-ui,sans-serif; color:var(--ink);
+        background:linear-gradient(180deg,var(--sky) 0%,var(--sky2) 55%,#e8f7ff 100%);
+        min-height:100vh; overflow-x:hidden;
+      }
+      @media (prefers-color-scheme: dark){
+        body{ background:linear-gradient(180deg,var(--sky) 0%,var(--sky2) 60%,#1a2547 100%); }
+      }
+      h1,h2,h3,.fredoka{ font-family:"Fredoka","Nunito",sans-serif; }
+      button{ font-family:inherit; cursor:pointer; border:none; color:inherit; }
+      button, [role="button"], select, summary, input:not([type="checkbox"],[type="radio"]){ min-height:2.75rem; }
+
+      /* floating background shapes */
+      .bg-decor{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+      .bg-decor span{ position:absolute; font-size:2rem; opacity:.35; animation:floaty 7s ease-in-out infinite; }
+      @keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(-6deg);} 50%{ transform:translateY(-16px) rotate(6deg);} }
+      .cloud{ position:absolute; background:#fff; border-radius:999px; opacity:.8; animation:drift 46s linear infinite; }
+      .cloud::before,.cloud::after{ content:""; position:absolute; background:#fff; border-radius:50%; }
+      .cloud{ width:110px; height:34px; }
+      .cloud::before{ width:52px; height:52px; top:-26px; left:16px; }
+      .cloud::after{ width:38px; height:38px; top:-18px; right:14px; }
+      @keyframes drift{ from{ transform:translateX(-160px);} to{ transform:translateX(110vw);} }
+      @media (prefers-reduced-motion: reduce){
+        .bg-decor span,.cloud{ animation:none; }
+        *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+      }
+
+      .wrap{ position:relative; z-index:1; max-width:1060px; margin:0 auto; padding:14px 14px 110px; }
+
+      /* top bar */
+      .topbar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+      .profile-chip{ display:flex; align-items:center; gap:10px; background:var(--card); border-radius:999px; padding:6px 16px 6px 6px; box-shadow:var(--shadow); }
+      .avatar{ width:52px; height:52px; border-radius:50%; display:grid; place-items:center; font-size:1.9rem; background:linear-gradient(135deg,#ffe29a,#ffb703); border:3px solid #fff; }
+      .profile-chip .pname{ font-family:"Fredoka"; font-weight:600; font-size:1.15rem; line-height:1.05; }
+      .profile-chip .plevel{ font-size:.8rem; font-weight:800; color:var(--ink-soft); }
+      .stat-chip{ display:flex; align-items:center; gap:7px; background:var(--card); border-radius:999px; padding:10px 16px; font-family:"Fredoka"; font-weight:600; font-size:1.1rem; box-shadow:var(--shadow); }
+      .stat-chip .ic{ font-size:1.25rem; }
+      .topbar .spacer{ flex:1; }
+      .icon-btn{ width:52px; height:52px; border-radius:50%; background:var(--card); box-shadow:var(--shadow); font-size:1.4rem; display:grid; place-items:center; }
+      .icon-btn.off{ opacity:.45; filter:grayscale(.7); }
+      .parent-btn{ background:var(--ink); color:#fff; border-radius:999px; padding:12px 20px; font-family:"Fredoka"; font-weight:600; font-size:1rem; box-shadow:var(--shadow); }
+
+      /* screens */
+      .screen{ display:none; }
+      .screen.active{ display:block; animation:pop .35s ease; }
+      @keyframes pop{ from{ opacity:0; transform:translateY(10px) scale(.99);} to{ opacity:1; transform:none;} }
+
+      .hero{ background:var(--card); border-radius:34px; box-shadow:var(--shadow); padding:26px 22px; text-align:center; position:relative; overflow:hidden; }
+      .hero h1{ margin:6px 0 4px; font-size:clamp(1.9rem,6vw,3rem); font-weight:700; }
+      .hero p{ margin:0; font-size:1.1rem; font-weight:700; color:var(--ink-soft); }
+      .hero .mascot{ font-size:4.6rem; display:inline-block; animation:bounce 2.2s ease-in-out infinite; }
+      @keyframes bounce{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-12px);} }
+      .rainbow-text{ background:linear-gradient(90deg,#ff6b6b,#fb8500,#ffb703,#2ec4b6,#4361ee,#7b5ea7); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+      .grid{ display:grid; gap:16px; margin-top:18px; }
+      .grid.c2{ grid-template-columns:repeat(2,1fr); }
+      .grid.c3{ grid-template-columns:repeat(3,1fr); }
+      @media (max-width:760px){ .grid.c3{ grid-template-columns:repeat(2,1fr);} }
+      @media (max-width:430px){ .grid.c2,.grid.c3{ grid-template-columns:1fr 1fr; gap:12px; } }
+      .big-card{ border-radius:var(--radius); padding:20px 14px; text-align:center; color:#fff; box-shadow:var(--shadow); transition:transform .15s ease; width:100%; }
+      .big-card:active{ transform:scale(.96); }
+      .big-card .emoji{ font-size:3rem; display:block; }
+      .big-card .t{ font-family:"Fredoka"; font-weight:600; font-size:1.3rem; display:block; margin-top:6px; }
+      .big-card .s{ font-size:.9rem; font-weight:800; opacity:.92; display:block; margin-top:2px; }
+      .c-add{ background:linear-gradient(150deg,#ff8fab,#ff6b6b); }
+      .c-sub{ background:linear-gradient(150deg,#4cc9f0,#4361ee); }
+      .c-mul{ background:linear-gradient(150deg,#ffb703,#fb8500); }
+      .c-div{ background:linear-gradient(150deg,#2ec4b6,#1a9e8f); }
+      .c-tables{ background:linear-gradient(150deg,#9d6bf5,#7b5ea7); }
+      .c-skills{ background:linear-gradient(150deg,#f15bb5,#c9184a); }
+      .c-quiz{ background:linear-gradient(150deg,#38b000,#008000); }
+      .c-games{ background:linear-gradient(150deg,#f72585,#7209b7); }
+      .c-daily{ background:linear-gradient(150deg,#ffd60a,#ff9500); color:#5b3a00; }
+      .c-world{ background:linear-gradient(150deg,#00c2a8,#0077b6); }
+
+      .panel{ background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px; margin-top:18px; }
+      .panel h2{ margin:0 0 6px; font-size:1.5rem; font-weight:600; }
+      .panel h3{ margin:14px 0 6px; font-size:1.15rem; font-weight:600; }
+      .muted{ color:var(--ink-soft); font-weight:700; }
+
+      .progress-track{ height:22px; background:var(--card-soft); border-radius:999px; overflow:hidden; border:3px solid rgba(34,48,74,.08); }
+      .progress-fill{ height:100%; border-radius:999px; background:linear-gradient(90deg,#ffb703,#fb8500); transition:width .6s ease; }
+
+      .pill-row{ display:flex; gap:10px; flex-wrap:wrap; margin:12px 0; }
+      .pill{ border-radius:999px; padding:12px 22px; font-family:"Fredoka"; font-weight:600; font-size:1.1rem; background:var(--card-soft); color:var(--ink); border:3px solid transparent; box-shadow:0 4px 0 rgba(34,48,74,.1); }
+      .pill.sel{ background:var(--sun); border-color:#e09f00; color:#4d3200; }
+      .pill:active{ transform:scale(.95); }
+
+      .btn{ border-radius:999px; padding:14px 28px; font-family:"Fredoka"; font-weight:600; font-size:1.2rem; background:var(--teal); color:#fff; box-shadow:0 6px 0 rgba(0,0,0,.18); transition:transform .12s; }
+      .btn:active{ transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,.18); }
+      .btn.sun{ background:var(--sun); color:#4d3200; }
+      .btn.coral{ background:var(--coral); }
+      .btn.grape{ background:var(--grape); }
+      .btn.ghost{ background:var(--card-soft); color:var(--ink); box-shadow:0 6px 0 rgba(34,48,74,.12); }
+      .btn:disabled{ opacity:.5; }
+
+      /* question play area */
+      .q-card{ background:var(--card); border-radius:34px; box-shadow:var(--shadow); padding:24px 18px; text-align:center; margin-top:16px; }
+      .q-topic{ display:inline-block; background:var(--card-soft); border-radius:999px; padding:6px 16px; font-weight:900; font-size:.9rem; color:var(--ink-soft); }
+      .q-count{ font-weight:900; color:var(--ink-soft); margin-top:8px; }
+      .q-text{ font-family:"Fredoka"; font-weight:600; font-size:clamp(2.2rem,8vw,3.4rem); margin:14px 0 4px; letter-spacing:1px; }
+      .q-sub{ font-size:1.15rem; font-weight:800; color:var(--ink-soft); margin:4px 0 0; }
+      .q-visual{ font-size:2rem; line-height:1.5; margin:12px auto; max-width:520px; word-break:break-all; }
+      .q-visual .grp{ display:inline-block; background:var(--card-soft); border-radius:16px; padding:6px 10px; margin:4px; }
+      .q-visual .crossed{ opacity:.28; text-decoration:line-through; filter:grayscale(1); }
+      .options{ display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:520px; margin:18px auto 4px; }
+      @media (max-width:400px){ .options{ grid-template-columns:1fr 1fr; gap:10px; } }
+      .opt{ font-family:"Fredoka"; font-weight:600; font-size:2rem; padding:18px 8px; border-radius:22px; background:var(--card-soft); color:var(--ink); border:4px solid rgba(34,48,74,.07); box-shadow:0 6px 0 rgba(34,48,74,.12); transition:transform .12s, background .2s; min-height:84px; }
+      .opt:active{ transform:scale(.95); }
+      .opt.right{ background:#d9f7d9; border-color:var(--green); }
+      .opt.wrong{ background:#ffe1e1; border-color:var(--coral); animation:shake .4s; }
+      .opt.word{ font-size:1.25rem; }
+      @keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-8px);} 75%{transform:translateX(8px);} }
+      .feedback{ min-height:64px; margin-top:14px; font-family:"Fredoka"; font-weight:600; font-size:1.35rem; }
+      .feedback .explain{ display:block; font-family:"Nunito"; font-weight:800; font-size:1.05rem; color:var(--ink-soft); margin-top:6px; }
+      .speak-row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+      .speak-btn{ border-radius:999px; background:var(--card-soft); padding:10px 18px; font-weight:900; font-size:1rem; box-shadow:0 4px 0 rgba(34,48,74,.1); }
+
+      /* drag & drop */
+      .dropzone{ display:inline-grid; place-items:center; min-width:96px; min-height:84px; border:4px dashed var(--sun); border-radius:22px; font-family:"Fredoka"; font-size:2.2rem; font-weight:600; background:#fff8e1; color:var(--ink); vertical-align:middle; margin:0 6px; padding:6px; }
+      @media (prefers-color-scheme: dark){ .dropzone{ background:#3d3410; } }
+      .dropzone.over{ background:#ffe9a8; transform:scale(1.05); }
+      .chips{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
+      .chip{ font-family:"Fredoka"; font-weight:600; font-size:1.7rem; width:72px; height:72px; border-radius:20px; background:linear-gradient(150deg,#4cc9f0,#4361ee); color:#fff; box-shadow:0 6px 0 rgba(0,0,0,.2); touch-action:none; }
+      .chip:active{ transform:scale(.93); }
+      .chip.used{ opacity:.3; pointer-events:none; }
+
+      /* tables */
+      .table-rows{ display:grid; gap:8px; max-width:440px; margin:14px auto; }
+      .trow{ display:flex; justify-content:space-between; align-items:center; background:var(--card-soft); border-radius:16px; padding:10px 18px; font-family:"Fredoka"; font-weight:600; font-size:1.3rem; width:100%; text-align:left; color:var(--ink); }
+      .trow .ans{ color:var(--grape); font-size:1.45rem; }
+      .trow:active{ transform:scale(.98); }
+      .blank-input{ font-family:"Fredoka"; font-size:2rem; font-weight:600; width:110px; text-align:center; border:4px solid var(--sun); border-radius:18px; padding:8px; background:var(--card); color:var(--ink); }
+      .numpad{ display:grid; grid-template-columns:repeat(3,76px); gap:10px; justify-content:center; margin-top:14px; }
+      .numpad button{ font-family:"Fredoka"; font-size:1.6rem; font-weight:600; height:64px; border-radius:18px; background:var(--card-soft); box-shadow:0 5px 0 rgba(34,48,74,.12); color:var(--ink); }
+      .numpad button:active{ transform:scale(.93); }
+
+      /* counting chart */
+      .count-grid{ display:grid; grid-template-columns:repeat(10,1fr); gap:6px; margin-top:12px; }
+      .count-cell{ aspect-ratio:1; display:grid; place-items:center; border-radius:12px; background:var(--card-soft); font-family:"Fredoka"; font-weight:600; font-size:clamp(.8rem,2.6vw,1.15rem); color:var(--ink); padding:2px; }
+      .count-cell:active{ transform:scale(.9); }
+      .count-cell.hot{ background:var(--sun); color:#4d3200; }
+
+      /* games stage */
+      .stage{ position:relative; background:linear-gradient(180deg,#aee3ff,#e8f7ff); border-radius:26px; min-height:170px; margin-top:14px; overflow:hidden; border:3px solid rgba(34,48,74,.06); }
+      @media (prefers-color-scheme: dark){ .stage{ background:linear-gradient(180deg,#27396b,#1d2b4d); } }
+      .stage .ground{ position:absolute; left:0; right:0; bottom:0; height:34px; background:#8be08b; }
+      @media (prefers-color-scheme: dark){ .stage .ground{ background:#2c5e3a; } }
+      .stage .actor{ position:absolute; font-size:3.4rem; transition:all .8s cubic-bezier(.34,1.56,.64,1); }
+      .hearts{ font-size:1.5rem; letter-spacing:4px; }
+      .timerbar{ height:16px; background:var(--card-soft); border-radius:999px; overflow:hidden; margin-top:12px; }
+      .timerbar > div{ height:100%; background:linear-gradient(90deg,#2ec4b6,#4361ee); transition:width .2s linear; }
+
+      /* journey */
+      .journey{ display:flex; align-items:flex-start; gap:0; overflow-x:auto; padding:18px 6px 8px; }
+      .jstep{ flex:0 0 auto; text-align:center; width:86px; position:relative; }
+      .jstep .dot{ width:58px; height:58px; margin:0 auto; border-radius:50%; display:grid; place-items:center; font-size:1.7rem; background:var(--card-soft); border:4px solid rgba(34,48,74,.1); }
+      .jstep.done .dot{ background:var(--sun); border-color:#e09f00; }
+      .jstep.now .dot{ background:var(--teal); border-color:#159a8c; animation:bounce 1.6s infinite; }
+      .jstep .lbl{ font-size:.78rem; font-weight:900; color:var(--ink-soft); margin-top:6px; }
+      .jstep::after{ content:""; position:absolute; top:29px; left:calc(50% + 32px); width:22px; border-top:5px dotted rgba(34,48,74,.25); }
+      .jstep:last-child::after{ display:none; }
+
+      .badge-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:12px; margin-top:12px; }
+      .badge{ background:var(--card-soft); border-radius:20px; padding:14px 8px; text-align:center; }
+      .badge .b-emoji{ font-size:2.3rem; display:block; }
+      .badge .b-name{ font-weight:900; font-size:.85rem; display:block; margin-top:4px; }
+      .badge.locked{ opacity:.4; filter:grayscale(1); }
+
+      .char-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:12px; margin-top:12px; }
+      .char-pick{ background:var(--card-soft); border-radius:20px; padding:14px 6px; text-align:center; font-size:2.4rem; width:100%; color:var(--ink); }
+      .char-pick .c-name{ display:block; font-size:.8rem; font-weight:900; margin-top:4px; font-family:"Nunito"; }
+      .char-pick.sel{ outline:4px solid var(--sun); background:#fff3cf; }
+      @media (prefers-color-scheme: dark){ .char-pick.sel{ background:#4a3d10; } }
+      .char-pick.locked{ opacity:.45; filter:grayscale(.8); }
+
+      /* parent dashboard */
+      .stat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-top:12px; }
+      .stat-box{ background:var(--card-soft); border-radius:20px; padding:16px; text-align:center; }
+      .stat-box .v{ font-family:"Fredoka"; font-weight:700; font-size:1.9rem; }
+      .stat-box .k{ font-weight:900; font-size:.85rem; color:var(--ink-soft); }
+      .bar-row{ display:grid; grid-template-columns:132px 1fr 52px; align-items:center; gap:10px; margin:10px 0; font-weight:900; font-size:.92rem; }
+      .bar-track{ height:18px; background:var(--card-soft); border-radius:999px; overflow:hidden; }
+      .bar-fill{ height:100%; border-radius:999px; }
+      .day-bars{ display:flex; align-items:flex-end; gap:8px; height:120px; margin-top:14px; }
+      .day-bar{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end; }
+      .day-bar .col{ width:100%; max-width:44px; border-radius:10px 10px 4px 4px; background:linear-gradient(180deg,#4cc9f0,#4361ee); min-height:4px; }
+      .day-bar .dl{ font-size:.75rem; font-weight:900; color:var(--ink-soft); }
+      .pin-dots{ display:flex; gap:12px; justify-content:center; margin:16px 0; }
+      .pin-dots span{ width:20px; height:20px; border-radius:50%; border:3px solid var(--ink-soft); }
+      .pin-dots span.on{ background:var(--sun); border-color:#e09f00; }
+      .pin-pad{ display:grid; grid-template-columns:repeat(3,84px); gap:12px; justify-content:center; }
+      .pin-pad button{ height:68px; border-radius:50%; font-family:"Fredoka"; font-size:1.7rem; font-weight:600; background:var(--card-soft); box-shadow:0 5px 0 rgba(34,48,74,.12); color:var(--ink); }
+      .pin-pad button:active{ transform:scale(.92); }
+
+      /* bottom nav */
+      .bottomnav{ position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--card); box-shadow:0 -6px 24px rgba(34,48,74,.18); display:flex; justify-content:space-around; padding:8px 4px calc(8px + env(safe-area-inset-bottom)); }
+      .bottomnav button{ background:none; display:flex; flex-direction:column; align-items:center; gap:2px; font-weight:900; font-size:.78rem; color:var(--ink-soft); padding:6px 10px; border-radius:16px; min-width:60px; }
+      .bottomnav button .ni{ font-size:1.55rem; }
+      .bottomnav button.sel{ color:var(--ink); background:var(--card-soft); }
+
+      .back-btn{ display:inline-flex; align-items:center; gap:8px; background:var(--card); border-radius:999px; padding:10px 20px; font-family:"Fredoka"; font-weight:600; font-size:1.05rem; box-shadow:var(--shadow); margin-bottom:4px; }
+      .screen-title{ font-size:clamp(1.6rem,5vw,2.2rem); font-weight:700; margin:10px 0 2px; }
+      .screen-sub{ font-weight:800; color:var(--ink-soft); margin:0 0 6px; font-size:1.05rem; }
+      @media (prefers-color-scheme: dark){ .screen-sub{ color:var(--ink-soft);} }
+
+      #confetti{ position:fixed; inset:0; pointer-events:none; z-index:60; }
+      .toast{ position:fixed; left:50%; bottom:104px; transform:translateX(-50%) translateY(30px); background:var(--ink); color:#fff; font-family:"Fredoka"; font-weight:600; font-size:1.15rem; padding:14px 26px; border-radius:999px; opacity:0; transition:all .3s; z-index:70; pointer-events:none; text-align:center; max-width:92vw; }
+      .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+      .result-stars{ font-size:3rem; letter-spacing:8px; }
+      .review-item{ background:var(--card-soft); border-radius:16px; padding:12px 16px; margin:8px 0; font-weight:800; text-align:left; }
+      .review-item .ok{ color:#1e9e1e; } .review-item .no{ color:var(--coral); }
+      .hidden{ display:none !important; }
+      .center{ text-align:center; }
+      .mt{ margin-top:16px; }
+      input[type="text"].name-input{ font-family:"Fredoka"; font-size:1.2rem; padding:12px 16px; border-radius:16px; border:3px solid var(--card-soft); background:var(--card); color:var(--ink); width:100%; max-width:320px; }
+    </style>
+  </head>
+  <body>
+    <div class="bg-decor" id="bgDecor" aria-hidden="true"></div>
+    <canvas id="confetti"></canvas>
+    <div class="toast" id="toast" role="status"></div>
+
+    <div class="wrap">
+      <!-- ======= TOP BAR ======= -->
+      <div class="topbar">
+        <div class="profile-chip">
+          <div class="avatar" id="avatarEmoji">🦊</div>
+          <div>
+            <div class="pname" id="profileName">Ahmad</div>
+            <div class="plevel" id="profileLevel">Level 1 · Explorer</div>
+          </div>
+        </div>
+        <div class="stat-chip"><span class="ic">⭐</span><span id="statStars">0</span></div>
+        <div class="stat-chip"><span class="ic">🪙</span><span id="statPoints">0</span></div>
+        <div class="spacer"></div>
+        <button class="icon-btn" id="musicBtn" aria-label="Turn background music on or off">🎵</button>
+        <button class="icon-btn" id="soundBtn" aria-label="Turn sound effects on or off">🔊</button>
+        <button class="parent-btn" id="parentBtn">👨‍👩‍👧 Parents</button>
+      </div>
+
+      <!-- ======= HOME ======= -->
+      <section class="screen active" id="screen-home">
+        <div class="hero">
+          <span class="mascot" id="heroMascot">🦊</span>
+          <h1>Welcome, <span class="rainbow-text">Little Genius!</span></h1>
+          <p id="heroSub">Let's play and learn maths together! 🎉</p>
+        </div>
+
+        <div class="panel">
+          <h2>⏱️ Daily 15-Minute Challenge</h2>
+          <p class="muted" id="dailyText">Play and learn for 15 minutes today to win bonus stars!</p>
+          <div class="progress-track mt"><div class="progress-fill" id="dailyFill" style="width:0%"></div></div>
+          <p class="muted" id="dailyMins" style="margin-top:8px">0 of 15 minutes done today</p>
+          <button class="btn sun mt" id="dailyGoBtn">▶ Start Today's Challenge</button>
+        </div>
+
+        <div class="grid c2">
+          <button class="big-card c-add" data-goto="learn" data-topic="add"><span class="emoji">➕ 🍎</span><span class="t">Addition</span><span class="s">Add numbers &amp; pictures</span></button>
+          <button class="big-card c-sub" data-goto="learn" data-topic="sub"><span class="emoji">➖ 🐰</span><span class="t">Subtraction</span><span class="s">Take away &amp; count</span></button>
+          <button class="big-card c-mul" data-goto="learn" data-topic="mul"><span class="emoji">✖️ 🦁</span><span class="t">Multiplication</span><span class="s">Groups &amp; tables fun</span></button>
+          <button class="big-card c-div" data-goto="learn" data-topic="div"><span class="emoji">➗ 🍬</span><span class="t">Division</span><span class="s">Share things fairly</span></button>
+          <button class="big-card c-tables" data-goto="tables"><span class="emoji">🏆 🔢</span><span class="t">Tables Champion</span><span class="s">Tables of 2, 5 and 10</span></button>
+          <button class="big-card c-skills" data-goto="skills"><span class="emoji">🧩 🔷</span><span class="t">More Maths Skills</span><span class="s">Counting, shapes &amp; more</span></button>
+          <button class="big-card c-games" data-goto="games"><span class="emoji">🚀 👾</span><span class="t">Fun Games</span><span class="s">Rockets, monsters &amp; treasure</span></button>
+          <button class="big-card c-quiz" data-goto="quiz-setup"><span class="emoji">📝 ⭐</span><span class="t">Smart Quiz</span><span class="s">10, 20 or 30 questions</span></button>
+        </div>
+
+        <div class="panel">
+          <h2>🗺️ My Adventure Journey</h2>
+          <p class="muted">Earn stars to travel along the path and unlock new friends!</p>
+          <div class="journey" id="journeyHome"></div>
+          <button class="btn grape mt" data-goto="world">🌍 Open Ahmad's Maths World</button>
+        </div>
+      </section>
+
+      <!-- ======= LEARN (topic practice) ======= -->
+      <section class="screen" id="screen-learn">
+        <button class="back-btn" data-goto="home">⬅ Home</button>
+        <h2 class="screen-title" id="learnTitle">➕ Addition</h2>
+        <p class="screen-sub">Pick a level, then answer the questions!</p>
+        <div class="pill-row" id="levelPills">
+          <button class="pill sel" data-level="1">🟢 Easy</button>
+          <button class="pill" data-level="2">🟡 Medium</button>
+          <button class="pill" data-level="3">🔴 Hard</button>
+        </div>
+        <div class="pill-row" id="modePills">
+          <button class="pill sel" data-mode="mix">🎲 Mixed Fun</button>
+          <button class="pill" data-mode="picture">🖼️ Pictures</button>
+          <button class="pill" data-mode="drag">🖐️ Drag &amp; Drop</button>
+        </div>
+        <div id="playArea"></div>
+      </section>
+
+      <!-- ======= TABLES ZONE ======= -->
+      <section class="screen" id="screen-tables">
+        <button class="back-btn" data-goto="home">⬅ Home</button>
+        <h2 class="screen-title">🏆 Tables Champion</h2>
+        <p class="screen-sub">Learn the tables of 2, 5 and 10 — hear them, play them, race them!</p>
+        <div class="pill-row" id="tablePills">
+          <button class="pill sel" data-table="2">Table of 2 ✌️</button>
+          <button class="pill" data-table="5">Table of 5 🖐️</button>
+          <button class="pill" data-table="10">Table of 10 🔟</button>
+        </div>
+        <div class="pill-row">
+          <button class="pill sel" data-tmode="learn">📖 Learn the Table</button>
+          <button class="pill" data-tmode="mcq">❓ Quiz Me</button>
+          <button class="pill" data-tmode="blank">✏️ Fill the Blank</button>
+          <button class="pill" data-tmode="timed">⏱️ Timed Challenge</button>
+        </div>
+        <div id="tableArea"></div>
+      </section>
+
+      <!-- ======= SKILLS ======= -->
+      <section class="screen" id="screen-skills">
+        <button class="back-btn" data-goto="home">⬅ Home</button>
+        <h2 class="screen-title">🧩 More Maths Skills</h2>
+        <p class="screen-sub">Tap a skill to start playing!</p>
+        <div class="grid c3" id="skillGrid"></div>
+        <div id="skillPlayArea"></div>
+      </section>
+
+      <!-- ======= GAMES ======= -->
+      <section class="screen" id="screen-games">
+        <button class="back-btn" data-goto="home">⬅ Home</button>
+        <h2 class="screen-title">🎮 Fun Games</h2>
+        <p class="screen-sub">Solve maths to play each game. You can do it!</p>
+        <div class="grid c2" id="gameGrid"></div>
+        <div id="gameArea"></div>
+      </section>
+
+      <!-- ======= QUIZ SETUP ======= -->
+      <section class="screen" id="screen-quiz-setup">
+        <button class="back-btn" data-goto="home">⬅ Home</button>
+        <h2 class="screen-title">📝 Smart Quiz</h2>
+        <p class="screen-sub">A mix of everything you are learning. The quiz gets harder when you do well — and easier when you need practice!</p>
+        <div class="panel center">
+          <h3>How many questions?</h3>
+          <div class="pill-row" style="justify-content:center" id="quizLenPills">
+            <button class="pill sel" data-qlen="10">10 Questions</button>
+            <button class="pill" data-qlen="20">20 Questions</button>
+          <button class="pill" data-qlen="30">30 Questions</button>
+          </div>
+          <button class="btn sun" id="startQuizBtn" style="font-size:1.4rem">▶ Start Quiz</button>
+        </div>
+        <div id="quizArea"></div>
+      </section>
+
+      <!-- ======= WORLD / REWARDS ======= -->
+      <section class="screen" id="screen-world">
+        <button class="back-btn" data-goto="home">⬅ Home</button>
+        <h2 class="screen-title">🌍 <span id="worldName">Ahmad</span>'s Maths World</h2>
+        <p class="screen-sub">Your character grows with every star you earn. Correct answers unlock new levels, friends and places!</p>
+        <div class="panel center">
+          <div style="font-size:5rem" id="worldChar">🦊</div>
+          <h2 id="worldLevel">Level 1 · Explorer</h2>
+          <div class="progress-track" style="max-width:420px;margin:10px auto"><div class="progress-fill" id="worldFill" style="width:0%"></div></div>
+          <p class="muted" id="worldNext">Earn 25 stars to reach Level 2!</p>
+        </div>
+        <div class="panel">
+          <h2>🗺️ Adventure Journey</h2>
+          <div class="journey" id="journeyWorld"></div>
+        </div>
+        <div class="panel">
+          <h2>🎭 Choose Your Character</h2>
+          <p class="muted">Locked friends open when you earn more stars.</p>
+          <div class="char-grid" id="charGrid"></div>
+        </div>
+        <div class="panel">
+          <h2>🏅 My Badges</h2>
+          <div class="badge-grid" id="badgeGrid"></div>
+        </div>
+      </section>
+
+      <!-- ======= PARENT PIN ======= -->
+      <section class="screen" id="screen-pin">
+        <button class="back-btn" data-goto="home">⬅ Home</button>
+        <div class="panel center" style="max-width:440px;margin-left:auto;margin-right:auto">
+          <h2>🔐 Parents Only</h2>
+          <p class="muted">Please enter the 4-digit parent PIN.<br />(First time? The PIN is <b>1234</b> — you can change it inside.)</p>
+          <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
+          <div class="pin-pad" id="pinPad"></div>
+          <p class="feedback" id="pinMsg" style="min-height:34px;font-size:1.05rem"></p>
+        </div>
+      </section>
+
+      <!-- ======= PARENT DASHBOARD ======= -->
+      <section class="screen" id="screen-parent">
+        <button class="back-btn" data-goto="home">⬅ Home</button>
+        <h2 class="screen-title">👨‍👩‍👧 Parent Dashboard</h2>
+        <p class="screen-sub" id="parentSub">How your Little Genius is doing</p>
+        <div class="stat-grid" id="parentStats"></div>
+        <div class="panel">
+          <h2>📊 Skills Performance</h2>
+          <div id="parentBars"></div>
+          <h3>🏆 Tables Mastery</h3>
+          <div id="parentTables"></div>
+        </div>
+        <div class="panel">
+          <h2>📅 This Week — Daily Activity</h2>
+          <div class="day-bars" id="parentWeek"></div>
+          <p class="muted" id="parentWeekText"></p>
+          <h3>🎯 Topics to Practise More</h3>
+          <p id="parentWeak" style="font-weight:800"></p>
+        </div>
+        <div class="panel">
+          <h2>⚙️ Settings</h2>
+          <h3>Child's name</h3>
+          <input type="text" class="name-input" id="nameInput" maxlength="20" />
+          <button class="btn" id="saveNameBtn" style="margin-left:8px">Save Name</button>
+          <h3>Change parent PIN</h3>
+          <input type="text" class="name-input" id="pinInput" maxlength="4" inputmode="numeric" placeholder="New 4-digit PIN" style="max-width:200px" />
+          <button class="btn" id="savePinBtn" style="margin-left:8px">Save PIN</button>
+          <h3>Reset all progress</h3>
+          <p class="muted">This clears stars, badges and all practice history for this device.</p>
+          <button class="btn coral" id="resetBtn">🗑️ Reset Progress</button>
+          <p class="feedback" id="settingsMsg" style="min-height:30px;font-size:1rem"></p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======= BOTTOM NAV ======= -->
+    <nav class="bottomnav" aria-label="Main">
+      <button data-goto="home" class="sel"><span class="ni">🏠</span>Home</button>
+      <button data-goto="learn"><span class="ni">➕</span>Learn</button>
+      <button data-goto="tables"><span class="ni">🏆</span>Tables</button>
+      <button data-goto="games"><span class="ni">🎮</span>Games</button>
+      <button data-goto="world"><span class="ni">🌍</span>My World</button>
+    </nav>
+    <script>
+    "use strict";
+    /* ================= STATE & PERSISTENCE ================= */
+    var LS_KEY = "littleGeniusMaths.v1";
+    var TOPICS = ["add","sub","mul","div","tables","skills"];
+    var TOPIC_LABEL = { add:"Addition ➕", sub:"Subtraction ➖", mul:"Multiplication ✖️", div:"Division ➗", tables:"Tables 🏆", skills:"Other Skills 🧩" };
+    var TOPIC_COLOR = { add:"#ff6b6b", sub:"#4361ee", mul:"#fb8500", div:"#2ec4b6", tables:"#7b5ea7", skills:"#f15bb5" };
+
+    function todayKey(d){ d = d || new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+    function freshState(){
+      return {
+        name:"Ahmad", pin:"1234", stars:0, points:0, charIdx:0,
+        music:true, sound:true,
+        totalSeconds:0, totalQ:0, totalC:0,
+        topics:{ add:{a:0,c:0}, sub:{a:0,c:0}, mul:{a:0,c:0}, div:{a:0,c:0}, tables:{a:0,c:0}, skills:{a:0,c:0} },
+        tablesBest:{ "2":0, "5":0, "10":0 },
+        badges:[], daily:{}, recent:[],
+        sessionStart: Date.now()
+      };
+    }
+    var S;
+    try { S = JSON.parse(localStorage.getItem(LS_KEY)) || freshState(); }
+    catch(e){ S = freshState(); }
+    if(!S.topics) S = freshState();
+    function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+    function dayRec(){
+      var k = todayKey();
+      if(!S.daily[k]) S.daily[k] = { q:0, c:0, sec:0, challengeDone:false };
+      return S.daily[k];
+    }
+    dayRec(); save();
+
+    /* time tracking: +1 second every second while the page is open */
+    setInterval(function(){
+      S.totalSeconds++; var d = dayRec(); d.sec++;
+      if(d.sec >= 900 && !d.challengeDone){
+        d.challengeDone = true; S.stars += 10; S.points += 50;
+        toast("🎉 Daily Challenge complete! +10 bonus stars!");
+        confettiBurst(); checkBadges(); renderTop();
+      }
+      if(document.getElementById("screen-home").classList.contains("active")) renderDaily();
+      save();
+    }, 1000);
+
+    /* ================= HELPERS ================= */
+    function $(id){ return document.getElementById(id); }
+    function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+    function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function shuffle(arr){ var a = arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+    function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+    function repeat(e,n){ var s=""; for(var i=0;i<n;i++) s+=e; return s; }
+    function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(function(){ t.classList.remove("show"); }, 2600); }
+
+    /* ================= SOUND (WebAudio, free & offline) ================= */
+    var AC = null;
+    function audio(){ if(!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(AC && AC.state==="suspended") AC.resume(); return AC; }
+    function tone(freq, t0, dur, type, vol){
+      var ac = audio(); if(!ac || !S.sound) return;
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.type = type||"sine"; o.frequency.value = freq;
+      var start = ac.currentTime + t0;
+      g.gain.setValueAtTime(0.0001, start);
+      g.gain.exponentialRampToValueAtTime(vol||0.18, start+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, start+dur);
+      o.connect(g); g.connect(ac.destination); o.start(start); o.stop(start+dur+0.05);
+    }
+    function sfx(kind){
+      if(!S.sound) return;
+      if(kind==="right"){ [523,659,784,1047].forEach(function(f,i){ tone(f, i*0.09, 0.22, "triangle", 0.2); }); }
+      else if(kind==="wrong"){ tone(220, 0, 0.18, "sine", 0.14); tone(196, 0.16, 0.24, "sine", 0.14); }
+      else if(kind==="pop"){ tone(660, 0, 0.08, "square", 0.08); }
+      else if(kind==="win"){ [523,659,784,1047,784,1047,1319].forEach(function(f,i){ tone(f, i*0.11, 0.3, "triangle", 0.2); }); }
+      else if(kind==="click"){ tone(440, 0, 0.06, "sine", 0.08); }
+    }
+    /* gentle background music loop */
+    var musicTimer = null, musicStep = 0;
+    var MELODY = [523,587,659,784, 659,587,523,0, 587,659,784,880, 784,659,587,0];
+    function musicTick(){
+      if(!S.music) return;
+      var f = MELODY[musicStep % MELODY.length]; musicStep++;
+      if(f){ /* play through tone() but bypass the sfx mute: use own gain path */
+        var ac = audio(); if(!ac) return;
+        var o = ac.createOscillator(), g = ac.createGain();
+        o.type="triangle"; o.frequency.value=f;
+        var t = ac.currentTime;
+        g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.055,t+0.03); g.gain.exponentialRampToValueAtTime(0.0001,t+0.42);
+        o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.45);
+        if(musicStep % 2 === 0){ var o2=ac.createOscillator(), g2=ac.createGain(); o2.type="sine"; o2.frequency.value=f/2; g2.gain.setValueAtTime(0.0001,t); g2.gain.exponentialRampToValueAtTime(0.04,t+0.03); g2.gain.exponentialRampToValueAtTime(0.0001,t+0.42); o2.connect(g2); g2.connect(ac.destination); o2.start(t); o2.stop(t+0.45); }
+      }
+    }
+    function startMusic(){ stopMusic(); if(S.music){ musicTimer = setInterval(musicTick, 430); } }
+    function stopMusic(){ if(musicTimer){ clearInterval(musicTimer); musicTimer=null; } }
+
+    /* ================= TEXT TO SPEECH ================= */
+    function speak(text, slow){
+      try{
+        if(!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(String(text).replace(/[×✖]/g," times ").replace(/÷/g," divided by ").replace(/−/g," minus "));
+        u.rate = slow ? 0.62 : 0.95; u.pitch = 1.15; u.lang = "en-GB";
+        window.speechSynthesis.speak(u);
+      }catch(e){}
+    }
+
+    /* ================= CONFETTI ================= */
+    var confettiPieces = [], confettiRunning = false;
+    function confettiBurst(n){
+      var cv = $("confetti"), ctx = cv.getContext("2d");
+      cv.width = window.innerWidth; cv.height = window.innerHeight;
+      var colors = ["#ff6b6b","#ffb703","#2ec4b6","#4361ee","#f15bb5","#4cc94c"];
+      for(var i=0;i<(n||90);i++){
+        confettiPieces.push({ x: Math.random()*cv.width, y: -20 - Math.random()*cv.height*0.3, w: 7+Math.random()*8, h: 10+Math.random()*10, vy: 2.2+Math.random()*3.2, vx: -1.4+Math.random()*2.8, rot: Math.random()*Math.PI, vr: -0.12+Math.random()*0.24, c: pick(colors) });
+      }
+      if(!confettiRunning){ confettiRunning = true; requestAnimationFrame(confettiFrame); }
+    }
+    function confettiFrame(){
+      var cv = $("confetti"), ctx = cv.getContext("2d");
+      ctx.clearRect(0,0,cv.width,cv.height);
+      confettiPieces = confettiPieces.filter(function(p){ return p.y < cv.height + 30; });
+      confettiPieces.forEach(function(p){
+        p.y += p.vy; p.x += p.vx + Math.sin(p.y/40); p.rot += p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle = p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+      });
+      if(confettiPieces.length){ requestAnimationFrame(confettiFrame); }
+      else { confettiRunning = false; ctx.clearRect(0,0,cv.width,cv.height); }
+    }
+
+    /* ================= LEVELS, CHARACTERS, BADGES ================= */
+    var LEVEL_NAMES = ["Explorer","Counter","Adder","Super Solver","Number Ninja","Table Star","Maths Hero","Brain Wizard","Grand Master","Little Genius"];
+    function levelOf(){ return Math.min(10, Math.floor(S.stars/25) + 1); }
+    function levelTitle(){ return "Level " + levelOf() + " · " + LEVEL_NAMES[levelOf()-1]; }
+    var CHARACTERS = [
+      { e:"🦊", n:"Foxy", need:0 }, { e:"🐰", n:"Bunny", need:25 }, { e:"🐼", n:"Panda", need:60 },
+      { e:"🦁", n:"Lion", need:110 }, { e:"🐵", n:"Monkey", need:170 }, { e:"🦄", n:"Unicorn", need:240 },
+      { e:"🐲", n:"Dragon", need:330 }, { e:"🧑‍🚀", n:"Astronaut", need:450 }
+    ];
+    var JOURNEY = [
+      { e:"🏠", n:"Home Village", need:0 }, { e:"🌳", n:"Counting Forest", need:25 }, { e:"🍎", n:"Fruit Valley", need:60 },
+      { e:"🏖️", n:"Number Beach", need:110 }, { e:"🏰", n:"Tables Castle", need:170 }, { e:"🚀", n:"Rocket Planet", need:240 },
+      { e:"🏝️", n:"Treasure Island", need:330 }, { e:"👑", n:"Genius Kingdom", need:450 }
+    ];
+    var BADGES = [
+      { id:"first", e:"🌟", n:"First Steps", test:function(){ return S.totalC >= 1; } },
+      { id:"ten", e:"🔟", n:"10 Correct!", test:function(){ return S.totalC >= 10; } },
+      { id:"fifty", e:"⭐", n:"50 Stars", test:function(){ return S.stars >= 50; } },
+      { id:"add20", e:"➕", n:"Addition Ace", test:function(){ return S.topics.add.c >= 20; } },
+      { id:"sub20", e:"➖", n:"Subtraction Star", test:function(){ return S.topics.sub.c >= 20; } },
+      { id:"mul20", e:"✖️", n:"Times Table Hero", test:function(){ return S.topics.mul.c + S.topics.tables.c >= 20; } },
+      { id:"div10", e:"➗", n:"Sharing Champion", test:function(){ return S.topics.div.c >= 10; } },
+      { id:"quiz1", e:"📝", n:"Quiz Whiz", test:function(){ return S.badges.indexOf("quizdone") > -1 || S._quizDone; } },
+      { id:"hundred", e:"💯", n:"100 Questions", test:function(){ return S.totalQ >= 100; } },
+      { id:"daily1", e:"⏱️", n:"Daily Champion", test:function(){ return Object.keys(S.daily).some(function(k){ return S.daily[k].challengeDone; }); } },
+      { id:"level5", e:"🎖️", n:"Level 5 Hero", test:function(){ return levelOf() >= 5; } },
+      { id:"genius", e:"🧠", n:"Little Genius", test:function(){ return levelOf() >= 10; } }
+    ];
+    function checkBadges(){
+      BADGES.forEach(function(b){
+        if(S.badges.indexOf(b.id) === -1 && b.id !== "quiz1" && b.test()){
+          S.badges.push(b.id); toast("🏅 New badge: " + b.n + "!"); sfx("win");
+        }
+      });
+      save();
+    }
+
+    /* ================= NAVIGATION ================= */
+    var currentScreen = "home";
+    function go(name, arg){
+      document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+      $("screen-" + name).classList.add("active");
+      currentScreen = name;
+      document.querySelectorAll(".bottomnav button").forEach(function(b){ b.classList.toggle("sel", b.getAttribute("data-goto") === name); });
+      window.scrollTo({ top:0 });
+      sfx("click");
+      if(name === "home") renderHome();
+      if(name === "learn") startLearn(arg || learnTopic);
+      if(name === "tables") renderTables();
+      if(name === "skills") renderSkills();
+      if(name === "games") renderGames();
+      if(name === "world") renderWorld();
+      if(name === "parent") renderParent();
+    }
+    document.addEventListener("click", function(ev){
+      var el = ev.target.closest("[data-goto]");
+      if(!el) return;
+      var topic = el.getAttribute("data-topic");
+      go(el.getAttribute("data-goto"), topic || undefined);
+    });
+    $("parentBtn").addEventListener("click", function(){ openPin(); });
+    $("musicBtn").addEventListener("click", function(){
+      S.music = !S.music; save(); renderTop();
+      if(S.music){ audio(); startMusic(); toast("🎵 Music on"); } else { stopMusic(); toast("🔇 Music off"); }
+    });
+    $("soundBtn").addEventListener("click", function(){
+      S.sound = !S.sound; save(); renderTop();
+      toast(S.sound ? "🔊 Sounds on" : "🔇 Sounds off");
+      if(S.sound) sfx("pop");
+    });
+    document.addEventListener("pointerdown", function(){ audio(); if(S.music) startMusic(); }, { once:true });
+
+    /* ================= TOP BAR & HOME ================= */
+    function renderTop(){
+      $("statStars").textContent = S.stars;
+      $("statPoints").textContent = S.points;
+      $("profileName").textContent = S.name;
+      $("profileLevel").textContent = levelTitle();
+      var ch = CHARACTERS[S.charIdx] || CHARACTERS[0];
+      $("avatarEmoji").textContent = ch.e;
+      $("heroMascot").textContent = ch.e;
+      $("musicBtn").classList.toggle("off", !S.music);
+      $("soundBtn").classList.toggle("off", !S.sound);
+      $("musicBtn").textContent = S.music ? "🎵" : "🎵";
+      $("soundBtn").textContent = S.sound ? "🔊" : "🔇";
+    }
+    function renderDaily(){
+      var d = dayRec(); var mins = Math.min(15, Math.floor(d.sec/60));
+      $("dailyFill").style.width = Math.round(Math.min(1, d.sec/900)*100) + "%";
+      $("dailyMins").textContent = d.challengeDone ? "🎉 Challenge complete today — you earned +10 bonus stars!" : mins + " of 15 minutes done today";
+      $("dailyText").textContent = d.challengeDone ? "Amazing work today, " + S.name + "! Come back tomorrow for a new challenge." : "Roz 15 minutes ki practice! Play any game or quiz — every minute counts. Finish to win +10 bonus stars!";
+    }
+    function journeyHTML(){
+      return JOURNEY.map(function(j){
+        var done = S.stars >= j.need && j.need > 0 || (j.need === 0);
+        var isNow = !done && (JOURNEY.filter(function(x){ return S.stars >= x.need; }).length === JOURNEY.indexOf(j));
+        var cls = done ? "done" : (isNow ? "now" : "");
+        return '<div class="jstep ' + cls + '"><div class="dot">' + j.e + '</div><div class="lbl">' + j.n + '<br>' + (j.need ? j.need + " ⭐" : "Start") + '</div></div>';
+      }).join("");
+    }
+    function renderHome(){
+      renderTop(); renderDaily();
+      $("journeyHome").innerHTML = journeyHTML();
+      $("heroSub").textContent = "Hello " + S.name + "! Let's play and learn maths together! 🎉";
+    }
+    $("dailyGoBtn").addEventListener("click", function(){ go("games"); });
+
+    /* background decorations */
+    (function(){
+      var d = $("bgDecor"); var items = ["🔢","⭐","➕","✖️","🎈","🌈","🍎","✏️"];
+      var html = "";
+      for(var i=0;i<3;i++){ html += '<div class="cloud" style="top:' + (4+i*13) + '%; animation-delay:' + (-i*15) + 's; animation-duration:' + (40+i*9) + 's"></div>'; }
+      for(var k=0;k<10;k++){
+        html += '<span style="left:' + rnd(2,94) + '%; top:' + rnd(4,88) + '%; animation-delay:' + (Math.random()*4) + 's">' + items[k % items.length] + '</span>';
+      }
+      d.innerHTML = html;
+    })();
+    </script>
+    <script>
+    "use strict";
+    /* ================= NUMBER WORDS ================= */
+    var ONES = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+    var TENSW = ["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+    function numWord(n){
+      if(n < 20) return ONES[n];
+      var t = Math.floor(n/10), o = n % 10;
+      return TENSW[t] + (o ? "-" + ONES[o] : "");
+    }
+    function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    /* ================= QUESTION BUILDING ================= */
+    var PRAISE = ["Super work! 🎉","You did it! 🌟","Fantastic! 🥳","Brilliant, Little Genius! 🧠","Wow, amazing! 🚀","Great job! 🎈"];
+    var TRYAGAIN = ["Good try! Let's look together 💪","Almost! Have another go 🌈","You can do it! 🐢","Nice try — look at the picture clue 🖼️"];
+    var FRUITS = ["🍎","🍌","🍓","🍊","🍇","🍉","🍐","🍒"];
+    var ANIMALS = ["🐶","🐱","🐰","🦋","🐥","🐠","🐞"];
+    var TOYS = ["⚽","🧸","🚗","🎈","🪁","🎁","🍬"];
+
+    function makeOptions(ans, spread){
+      var set = {}; set[ans] = true; var opts = [ans];
+      var tries = 0;
+      while(opts.length < 4 && tries < 60){
+        tries++;
+        var d = pick(spread || [1,-1,2,-2,10,-10,3,-3]);
+        var v = ans + d;
+        if(v < 0 || set[v]) continue;
+        set[v] = true; opts.push(v);
+      }
+      while(opts.length < 4){ var v2 = ans + opts.length*3 + 2; if(!set[v2]){ set[v2]=true; opts.push(v2); } }
+      return shuffle(opts);
+    }
+    function freshQ(q){
+      var key = q.topic + "|" + q.text;
+      if(S.recent.indexOf(key) > -1) return false;
+      S.recent.push(key); if(S.recent.length > 40) S.recent.shift(); save();
+      return true;
+    }
+    function gen(genFn){
+      var q = genFn();
+      var guard = 0;
+      while(!freshQ(q) && guard < 8){ q = genFn(); guard++; }
+      return q;
+    }
+
+    /* ---------- ADDITION ---------- */
+    function genAdd(level, mode){
+      return gen(function(){
+        var usePic = mode === "picture" || (mode === "mix" && Math.random() < 0.45);
+        var useDrag = mode === "drag";
+        var a, b;
+        if(level === 1){ a = rnd(1,5); b = rnd(1,5); }
+        else if(level === 2){
+          if(Math.random() < 0.5){ a = rnd(2,9); b = rnd(2,9); }
+          else { a = rnd(1,4)*10 + rnd(0,5); b = rnd(1,3)*10 + rnd(0, 9 - (a%10)); }
+        } else {
+          a = rnd(1,8)*10 + rnd(0,9); var maxO = 9 - (a%10); b = rnd(1,8)*10 + rnd(0, maxO);
+          if(a + b < 30){ a += 20; }
+        }
+        var ans = a + b;
+        var q = { topic:"add", answer:ans, speak: a + " plus " + b + " equals what?",
+          explain: "Count them all together: " + a + " + " + b + " = " + ans + "." };
+        if(usePic && ans <= 20){
+          var e = pick(FRUITS.concat(ANIMALS, TOYS));
+          q.text = a + " + " + b + " = ?";
+          q.sub = "Count the pictures!";
+          q.visual = '<span class="grp">' + repeat(e, a) + '</span> ➕ <span class="grp">' + repeat(e, b) + '</span>';
+          q.options = makeOptions(ans);
+        } else if(useDrag){
+          q.type = "drag";
+          q.text = a + " + " + b + " = ";
+          q.sub = "Drag the right number into the box — or just tap it!";
+          q.dragChips = makeOptions(ans);
+        } else {
+          q.text = a + " + " + b + " = ?";
+          q.options = makeOptions(ans, level === 3 ? [1,-1,10,-10,2,-2] : undefined);
+        }
+        return q;
+      });
+    }
+    /* ---------- SUBTRACTION ---------- */
+    function genSub(level, mode){
+      return gen(function(){
+        var usePic = mode === "picture" || (mode === "mix" && Math.random() < 0.45);
+        var a, b;
+        if(level === 1){ a = rnd(3,10); b = rnd(1, a-1); }
+        else if(level === 2){
+          if(Math.random() < 0.5){ a = rnd(6,18); b = rnd(2, a-2); }
+          else { var t = rnd(2,7), o1 = rnd(3,9), o2 = rnd(0, o1); a = t*10 + o1; b = rnd(1, t-1)*10 + o2; }
+        } else { var t2 = rnd(4,9), p1 = rnd(4,9), p2 = rnd(0, p1); a = t2*10 + p1; b = rnd(1, t2-1)*10 + p2; }
+        var ans = a - b;
+        var q = { topic:"sub", answer:ans, speak: a + " minus " + b + " equals what?",
+          explain: "Start with " + a + " and take away " + b + ". " + a + " − " + b + " = " + ans + "." };
+        if(usePic && a <= 15){
+          var e = pick(FRUITS.concat(ANIMALS, TOYS));
+          var vis = "";
+          for(var i=0;i<a;i++) vis += '<span class="' + (i >= ans ? "crossed" : "") + '">' + e + "</span>";
+          q.text = a + " − " + b + " = ?";
+          q.sub = "Some are crossed out. How many are left?";
+          q.visual = vis;
+          q.options = makeOptions(ans);
+        } else if(mode === "drag"){
+          q.type = "drag"; q.text = a + " − " + b + " = ";
+          q.sub = "Drag the right number into the box — or just tap it!";
+          q.dragChips = makeOptions(ans);
+        } else {
+          q.text = a + " − " + b + " = ?";
+          q.options = makeOptions(ans, level === 3 ? [1,-1,10,-10,2,-2] : undefined);
+        }
+        return q;
+      });
+    }
+    /* ---------- MULTIPLICATION ---------- */
+    function genMul(level){
+      return gen(function(){
+        var tables = level === 1 ? [2,10] : [2,5,10];
+        var t = pick(tables), n = rnd(1,10), ans = t*n;
+        var kind = Math.random();
+        var rep = []; for(var i=0;i<n;i++) rep.push(t);
+        var q = { topic:"mul", answer:ans,
+          explain: t + " × " + n + " means " + n + " groups of " + t + ": " + rep.join(" + ") + " = " + ans + "." };
+        if(level >= 2 && kind < 0.3){
+          q.type = "blank";
+          q.text = t + " × ? = " + ans;
+          q.answer = n;
+          q.speak = t + " times what equals " + ans + "?";
+          q.explain = t + " × " + n + " = " + ans + ", so the missing number is " + n + ".";
+        } else if(kind < 0.55){
+          q.text = t + " × " + n + " = ?";
+          q.sub = n + " groups of " + t;
+          var groups = ""; for(var g2=0; g2<n && g2<=5; g2++) groups += '<span class="grp">' + repeat("🔵", t) + "</span>";
+          q.visual = n <= 5 ? groups : "";
+          q.speak = t + " times " + n + " equals what?";
+          q.options = makeOptions(ans, [t, -t, 1, -1, 2, -2]);
+        } else {
+          q.text = t + " × " + n + " = ?";
+          q.speak = t + " times " + n + " equals what?";
+          q.options = makeOptions(ans, [t, -t, 1, -1, 2, -2]);
+        }
+        return q;
+      });
+    }
+    /* ---------- DIVISION ---------- */
+    function genDiv(level){
+      return gen(function(){
+        var friends = level === 1 ? pick([2,5,10]) : pick([2,3,4,5,10]);
+        var each = rnd(1, level === 1 ? 6 : 10);
+        var total = friends * each;
+        var item = pick([["🍎","apples"],["🍬","candies"],["⚽","balls"],["🧸","toys"],["🍪","cookies"]]);
+        var kids = ["🦊","🐰","🐼","🦁","🐵","🐶","🐱","🦄","🐷","🐸"].slice(0, Math.min(friends, 6));
+        var q = { topic:"div", answer: each,
+          text: total + " ÷ " + friends + " = ?",
+          sub: "Share " + total + " " + item[1] + " equally between " + friends + " friends. How many does each friend get?",
+          speak: total + " divided by " + friends + " equals what? Share the " + item[1] + " equally.",
+          explain: total + " " + item[1] + " shared between " + friends + " friends: each friend gets " + each + ". " + friends + " × " + each + " = " + total + ".",
+          options: makeOptions(each, [1,-1,2,-2, friends, -friends]) };
+        q.visual = repeat(item[0], Math.min(total, 20)) + "<br>" + kids.join(" ");
+        return q;
+      });
+    }
+    /* ---------- TABLES PRACTICE ---------- */
+    function genTableQ(table, kind){
+      return gen(function(){
+        var n = rnd(1,10), ans = table*n;
+        var q = { topic:"tables", answer:ans, speak: table + " times " + n + " equals what?",
+          explain: "Table of " + table + ": " + table + " × " + n + " = " + ans + ". Count in " + table + "s to check!" };
+        if(kind === "blank"){
+          if(Math.random() < 0.5){ q.type = "blank"; q.text = table + " × ? = " + ans; q.answer = n; q.speak = table + " times what equals " + ans + "?"; }
+          else { q.type = "blank"; q.text = table + " × " + n + " = ?"; }
+        } else {
+          q.text = table + " × " + n + " = ?";
+          q.options = makeOptions(ans, [table, -table, 1, -1, 2, -2]);
+        }
+        return q;
+      });
+    }
+    /* ---------- OTHER SKILLS ---------- */
+    var SKILLS = [
+      { id:"counting", e:"🔢", n:"Counting 1–100", d:"Count and find numbers" },
+      { id:"names", e:"🔤", n:"Number Names", d:"Words for numbers" },
+      { id:"beforeafter", e:"⏭️", n:"Before, After, Between", d:"Neighbours of numbers" },
+      { id:"order", e:"🪜", n:"Biggest & Smallest", d:"Order numbers" },
+      { id:"compare", e:"⚖️", n:"Greater & Less", d:"Use >, < and =" },
+      { id:"missing", e:"🕵️", n:"Missing Numbers", d:"Fill the gap" },
+      { id:"shapes", e:"🔷", n:"Shapes & Patterns", d:"What comes next?" },
+      { id:"oddeven", e:"🎲", n:"Odd & Even", d:"Pairs or not?" },
+      { id:"placevalue", e:"🏠", n:"Tens & Ones", d:"Place value fun" },
+      { id:"measure", e:"📏", n:"Longer & Taller", d:"Compare sizes" }
+    ];
+    function genSkill(id){
+      return gen(function(){
+        var q = { topic:"skills" };
+        if(id === "counting"){
+          if(Math.random() < 0.5){
+            var n = rnd(3,20); var e = pick(["⭐","🍎","🎈","🐥","🍓"]);
+            q.text = "How many do you see?"; q.visual = repeat(e, n); q.answer = n;
+            q.speak = "How many do you see? Count carefully!";
+            q.explain = "Count one by one: there are " + n + ".";
+            q.options = makeOptions(n);
+          } else {
+            var s = rnd(1,95); q.text = s + ", " + (s+1) + ", " + (s+2) + ", ?";
+            q.answer = s+3; q.speak = "What number comes next after " + (s+2) + "?";
+            q.explain = "Counting up: " + s + ", " + (s+1) + ", " + (s+2) + ", " + (s+3) + ".";
+            q.options = makeOptions(s+3);
+          }
+        } else if(id === "names"){
+          var n2 = rnd(1,100);
+          if(Math.random() < 0.5){
+            q.text = "Which word is " + n2 + "?"; q.answer = null; q.wordOptions = true;
+            q.options = shuffle([cap(numWord(n2)), cap(numWord(Math.min(100, n2+1))), cap(numWord(Math.max(1, n2+2))), cap(numWord(Math.max(1, n2-1)))].filter(function(v,i,a){ return a.indexOf(v)===i; }));
+            while(q.options.length < 4) q.options.push(cap(numWord(rnd(1,100))));
+            q.answer = cap(numWord(n2));
+            q.speak = "Which word is the number " + n2 + "?";
+            q.explain = n2 + " is written as \"" + numWord(n2) + "\".";
+          } else {
+            q.text = "\"" + cap(numWord(n2)) + "\" is which number?"; q.answer = n2;
+            q.speak = "The word " + numWord(n2) + " is which number?";
+            q.explain = "\"" + cap(numWord(n2)) + "\" means " + n2 + ".";
+            q.options = makeOptions(n2, [1,-1,10,-10,2,-2]);
+          }
+        } else if(id === "beforeafter"){
+          var n3 = rnd(3,98), kind = pick(["after","before","between"]);
+          if(kind === "after"){ q.text = "What comes just AFTER " + n3 + "?"; q.answer = n3+1; q.speak = q.text; q.explain = "After " + n3 + " comes " + (n3+1) + "."; }
+          else if(kind === "before"){ q.text = "What comes just BEFORE " + n3 + "?"; q.answer = n3-1; q.speak = q.text; q.explain = "Before " + n3 + " comes " + (n3-1) + "."; }
+          else { q.text = n3 + ", ?, " + (n3+2); q.sub = "Which number goes between?"; q.answer = n3+1; q.speak = "Which number goes between " + n3 + " and " + (n3+2) + "?"; q.explain = n3 + ", " + (n3+1) + ", " + (n3+2) + " — the middle number is " + (n3+1) + "."; }
+          q.options = makeOptions(q.answer);
+        } else if(id === "order"){
+          var nums = shuffle([rnd(1,99), rnd(1,99), rnd(1,99), rnd(1,99)]).filter(function(v,i,a){ return a.indexOf(v)===i; });
+          while(nums.length < 4) nums.push(rnd(1,99));
+          var big = Math.random() < 0.5;
+          q.answer = big ? Math.max.apply(null, nums) : Math.min.apply(null, nums);
+          q.text = "Tap the " + (big ? "BIGGEST" : "SMALLEST") + " number";
+          q.options = shuffle(nums);
+          q.speak = "Tap the " + (big ? "biggest" : "smallest") + " number.";
+          q.explain = "In order: " + nums.slice().sort(function(x,y){ return x-y; }).join(", ") + ". The " + (big ? "biggest" : "smallest") + " is " + q.answer + ".";
+        } else if(id === "compare"){
+          var x = rnd(1,50), y = rnd(1,50); if(Math.random() < 0.2) y = x;
+          q.text = x + " ___ " + y; q.sub = "Which sign makes it true?";
+          q.answer = x > y ? ">" : (x < y ? "<" : "=");
+          q.wordOptions = true; q.options = [">", "<", "="];
+          q.speak = "Which sign goes between " + x + " and " + y + "? Greater than, less than, or equal?";
+          q.explain = x + " is " + (x > y ? "greater than" : (x < y ? "less than" : "equal to")) + " " + y + ", so we use \"" + q.answer + "\".";
+        } else if(id === "missing"){
+          var step = pick([1,1,2,5,10]); var start = rnd(1, 60); var gap = rnd(1,3);
+          var seq = [0,1,2,3].map(function(i){ return start + i*step; });
+          q.answer = seq[gap];
+          q.text = seq.map(function(v,i){ return i === gap ? "?" : v; }).join(", ");
+          q.sub = "Find the missing number";
+          q.speak = "Find the missing number in the pattern.";
+          q.explain = "The numbers go up by " + step + ": " + seq.join(", ") + ".";
+          q.options = makeOptions(q.answer, [step, -step, 1, -1]);
+        } else if(id === "shapes"){
+          if(Math.random() < 0.5){
+            var shapes = [["🔺","Triangle",3],["🟥","Square",4],["🟢","Circle",0],["⭐","Star",5],["🟦","Rectangle",4]];
+            var sh = pick(shapes);
+            q.text = "What shape is this? " + sh[0]; q.wordOptions = true;
+            q.answer = sh[1];
+            q.options = shuffle([sh[1]].concat(shuffle(shapes.filter(function(s){ return s[1] !== sh[1]; })).slice(0,3).map(function(s){ return s[1]; })));
+            q.speak = "What shape is this?";
+            q.explain = "That is a " + sh[1].toLowerCase() + (sh[2] ? " — it has " + sh[2] + " sides." : " — it is round with no corners.");
+          } else {
+            var pats = [ ["🔴","🔵"], ["⭐","🌙"], ["🍎","🍌"], ["🔺","🟥"] ];
+            var p = pick(pats);
+            q.text = "What comes next?";
+            q.visual = (p[0] + " " + p[1] + " ").repeat(3);
+            q.answer = p[0]; q.wordOptions = true;
+            q.options = shuffle([p[0], p[1], "🟢", "💜"]);
+            q.speak = "What comes next in the pattern?";
+            q.explain = "The pattern repeats " + p[0] + " then " + p[1] + ", so next is " + p[0] + ".";
+          }
+        } else if(id === "oddeven"){
+          var n4 = rnd(1,60);
+          if(Math.random() < 0.5){
+            q.text = "Is " + n4 + " odd or even?"; q.wordOptions = true;
+            q.answer = n4 % 2 === 0 ? "Even" : "Odd"; q.options = ["Even","Odd"];
+            q.speak = "Is " + n4 + " odd or even?";
+            q.explain = n4 + (n4 % 2 === 0 ? " can be split into two equal groups, so it is EVEN." : " cannot be split into two equal groups — one is left over, so it is ODD.");
+          } else {
+            var wantEven = Math.random() < 0.5;
+            var opts = []; while(opts.length < 4){ var v = rnd(1,60); if(!opts.includes(v)) opts.push(v); }
+            var target = opts.find(function(v){ return (v % 2 === 0) === wantEven; });
+            if(target === undefined){ target = wantEven ? 8 : 7; opts[0] = target; }
+            q.text = "Tap an " + (wantEven ? "EVEN" : "ODD") + " number";
+            q.answer = target; q.options = opts;
+            q.speak = q.text;
+            q.explain = target + " is " + (wantEven ? "even — it ends in 0, 2, 4, 6 or 8." : "odd — it ends in 1, 3, 5, 7 or 9.");
+            q.multiAnswer = opts.filter(function(v){ return (v % 2 === 0) === wantEven; });
+          }
+        } else if(id === "placevalue"){
+          var t5 = rnd(1,9), o5 = rnd(0,9), num = t5*10 + o5;
+          if(Math.random() < 0.5){
+            q.text = "In " + num + ", how many TENS are there?"; q.answer = t5;
+            q.speak = "In the number " + num + ", how many tens are there?";
+            q.explain = num + " = " + t5 + " tens and " + o5 + " ones.";
+          } else {
+            q.text = t5 + " tens and " + o5 + " ones make…?"; q.answer = num;
+            q.speak = t5 + " tens and " + o5 + " ones make which number?";
+            q.explain = t5 + " tens = " + (t5*10) + ", plus " + o5 + " ones = " + num + ".";
+          }
+          q.visual = repeat("🟦", t5) + " " + repeat("🟩", o5);
+          q.sub = "🟦 = a ten block · 🟩 = a one block";
+          q.options = makeOptions(q.answer, [1,-1,10,-10]);
+        } else if(id === "measure"){
+          var a6 = rnd(2,9), b6 = rnd(2,9); while(b6 === a6) b6 = rnd(2,9);
+          var longer = Math.random() < 0.5;
+          q.text = "Which row of blocks is " + (longer ? "LONGER" : "SHORTER") + "?";
+          q.visual = "A: " + repeat("🟧", a6) + "<br>B: " + repeat("🟪", b6);
+          q.wordOptions = true; q.options = ["Row A", "Row B"];
+          q.answer = (longer ? (a6 > b6) : (a6 < b6)) ? "Row A" : "Row B";
+          q.speak = q.text;
+          q.explain = "Row A has " + a6 + " blocks and Row B has " + b6 + " blocks. The " + (longer ? "longer" : "shorter") + " row is " + q.answer + ".";
+        }
+        if(!q.options && q.answer !== null && q.answer !== undefined && !q.wordOptions) q.options = makeOptions(q.answer);
+        return q;
+      });
+    }
+    /* recognition: hear a number, tap it */
+    function genRecognition(){
+      return gen(function(){
+        var n = rnd(11,100);
+        return { topic:"skills", text:"🔊 Tap the number you hear!", sub:"Press Listen, then tap the number.",
+          speak:"Tap the number " + n + ". " + numWord(n) + ".", answer:n, options: makeOptions(n, [1,-1,10,-10]),
+          explain:"The number was " + n + " — \"" + numWord(n) + "\".", autoSpeak:true };
+      });
+    }
+    </script>
+    <script>
+    "use strict";
+    /* ================= SCORING ================= */
+    function recordAnswer(topic, correct){
+      S.totalQ++; var d = dayRec(); d.q++;
+      if(S.topics[topic]){ S.topics[topic].a++; }
+      if(correct){
+        S.totalC++; d.c++;
+        if(S.topics[topic]) S.topics[topic].c++;
+        S.stars += 1; S.points += 10;
+      }
+      save(); renderTop();
+    }
+
+    /* ================= QUESTION PLAYER ================= */
+    /* Renders one question into container. opts: {countLabel, onDone(firstTryCorrect), perQuestionSec, onTimeout} */
+    function playQuestion(container, q, opts){
+      opts = opts || {};
+      var answered = false, firstTry = true, timerInt = null, timeLeft = opts.perQuestionSec || 0;
+
+      var html = '<div class="q-card">';
+      html += '<span class="q-topic">' + esc(TOPIC_LABEL[q.topic] || "Maths") + '</span>';
+      if(opts.countLabel) html += '<div class="q-count">' + esc(opts.countLabel) + '</div>';
+      if(opts.perQuestionSec) html += '<div class="timerbar"><div class="tfill" style="width:100%"></div></div>';
+      html += '<div class="q-text">' + q.text + (q.type === "drag" ? '<span class="dropzone" id="dz">?</span>' : '') + '</div>';
+      if(q.sub) html += '<p class="q-sub">' + esc(q.sub) + '</p>';
+      if(q.visual) html += '<div class="q-visual">' + q.visual + '</div>';
+      html += '<div class="speak-row">'
+        + '<button class="speak-btn" data-act="listen">🔊 Listen</button>'
+        + '<button class="speak-btn" data-act="repeat">🔁 Repeat</button>'
+        + '<button class="speak-btn" data-act="slow">🐢 Slow</button></div>';
+
+      if(q.type === "drag"){
+        html += '<div class="chips">' + q.dragChips.map(function(c){ return '<button class="chip" draggable="true" data-val="' + c + '">' + c + '</button>'; }).join("") + '</div>';
+      } else if(q.type === "blank"){
+        html += '<div class="mt"><input class="blank-input" id="blankIn" readonly value="" aria-label="Your answer" /></div>';
+        html += '<div class="numpad">' + [1,2,3,4,5,6,7,8,9,"⌫",0,"✔"].map(function(k){ return '<button data-key="' + k + '">' + k + '</button>'; }).join("") + '</div>';
+      } else {
+        html += '<div class="options">' + q.options.map(function(o){
+          var isWord = q.wordOptions || typeof o === "string";
+          return '<button class="opt' + (isWord ? " word" : "") + '" data-val="' + esc(o) + '">' + esc(o) + '</button>';
+        }).join("") + '</div>';
+      }
+      html += '<div class="feedback" aria-live="polite"></div>';
+      html += '<button class="btn sun hidden" data-act="next">Next ➜</button>';
+      html += '</div>';
+      container.innerHTML = html;
+
+      var fb = container.querySelector(".feedback");
+      var nextBtn = container.querySelector('[data-act="next"]');
+      var speakText = q.speak || q.text;
+      if(q.autoSpeak) setTimeout(function(){ speak(speakText, false); }, 350);
+
+      var recorded = false;
+      function finish(correctFirst){
+        if(recorded) return; recorded = true;
+        if(timerInt) clearInterval(timerInt);
+        recordAnswer(q.topic, correctFirst);
+        if(correctFirst){ checkBadges(); }
+        nextBtn.classList.remove("hidden");
+        nextBtn.focus();
+      }
+      function doRight(btn){
+        if(btn) btn.classList.add("right");
+        sfx("right"); confettiBurst(35);
+        fb.innerHTML = "⭐ " + pick(PRAISE) + '<span class="explain">' + esc(q.explain || "") + '</span>';
+        speak("Well done!", false);
+        container.querySelectorAll(".opt,.chip").forEach(function(b){ b.style.pointerEvents = "none"; });
+        finish(firstTry);
+      }
+      function doWrong(btn){
+        if(answered) return;
+        if(btn) btn.classList.add("wrong");
+        sfx("wrong");
+        firstTry = false;
+        fb.innerHTML = pick(TRYAGAIN) + '<span class="explain">💡 Clue: ' + esc(q.explain || "") + '</span>';
+        if(btn) setTimeout(function(){ btn.classList.remove("wrong"); }, 450);
+      }
+      function isRight(val){
+        if(q.multiAnswer) return q.multiAnswer.some(function(v){ return String(v) === String(val); });
+        return String(val) === String(q.answer);
+      }
+
+      container.querySelectorAll(".opt").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          if(answered) return;
+          if(isRight(btn.getAttribute("data-val"))) doRight(btn); else doWrong(btn);
+        });
+      });
+
+      /* drag & drop + tap-to-place */
+      var dz = container.querySelector("#dz");
+      if(dz){
+        var placed = null;
+        function place(chip){
+          if(answered) return;
+          container.querySelectorAll(".chip").forEach(function(c){ c.classList.remove("used"); });
+          chip.classList.add("used"); placed = chip;
+          dz.textContent = chip.getAttribute("data-val");
+          sfx("pop");
+          if(isRight(chip.getAttribute("data-val"))){ dz.style.borderColor = "var(--green)"; doRight(null); }
+          else { doWrong(null); dz.textContent = "?"; chip.classList.remove("used"); placed = null; }
+        }
+        container.querySelectorAll(".chip").forEach(function(chip){
+          chip.addEventListener("click", function(){ place(chip); });
+          chip.addEventListener("dragstart", function(ev){ ev.dataTransfer.setData("text/plain", chip.getAttribute("data-val")); chip._drag = true; });
+        });
+        dz.addEventListener("dragover", function(ev){ ev.preventDefault(); dz.classList.add("over"); });
+        dz.addEventListener("dragleave", function(){ dz.classList.remove("over"); });
+        dz.addEventListener("drop", function(ev){
+          ev.preventDefault(); dz.classList.remove("over");
+          var v = ev.dataTransfer.getData("text/plain");
+          var chip = container.querySelector('.chip[data-val="' + v + '"]');
+          if(chip) place(chip);
+        });
+      }
+
+      /* blank input with on-screen numpad */
+      var blankIn = container.querySelector("#blankIn");
+      if(blankIn){
+        container.querySelectorAll(".numpad button").forEach(function(b){
+          b.addEventListener("click", function(){
+            if(answered) return;
+            var k = b.getAttribute("data-key");
+            if(k === "⌫") blankIn.value = blankIn.value.slice(0, -1);
+            else if(k === "✔"){
+              if(blankIn.value === "") return;
+              if(isRight(blankIn.value)){ blankIn.style.borderColor = "var(--green)"; doRight(null); }
+              else { blankIn.style.borderColor = "var(--coral)"; doWrong(null); }
+            }
+            else if(blankIn.value.length < 3) blankIn.value += k;
+            sfx("click");
+          });
+        });
+      }
+
+      container.querySelectorAll(".speak-btn").forEach(function(b){
+        b.addEventListener("click", function(){
+          var act = b.getAttribute("data-act");
+          speak(speakText, act === "slow");
+        });
+      });
+      nextBtn.addEventListener("click", function(){ if(opts.onDone) opts.onDone(firstTry); });
+
+      /* per-question countdown (speed games) */
+      if(opts.perQuestionSec){
+        var fill = container.querySelector(".tfill");
+        var total = opts.perQuestionSec * 10, ticks = 0;
+        timerInt = setInterval(function(){
+          ticks++;
+          var pct = Math.max(0, 100 - (ticks/total)*100);
+          if(fill) fill.style.width = pct + "%";
+          if(ticks >= total){
+            clearInterval(timerInt);
+            if(!answered){
+              answered = true; firstTry = false;
+              fb.innerHTML = "⏰ Time's up! The answer was <b>" + esc(q.answer) + '</b><span class="explain">' + esc(q.explain || "") + '</span>';
+              container.querySelectorAll(".opt,.chip").forEach(function(b){ b.style.pointerEvents = "none"; });
+              finish(false);
+            }
+          }
+        }, 100);
+      }
+      return { stopTimer:function(){ if(timerInt) clearInterval(timerInt); } };
+    }
+
+    /* ================= SESSION RUNNER ================= */
+    /* cfg: { total, genFn, label, stageHTML, onProgress(correctCount, answeredCount, stageEl), finishEmoji, perQuestionSec, review } */
+    function runSession(container, cfg){
+      var idx = 0, correct = 0, review = [];
+      container.innerHTML = (cfg.stageHTML || "") + '<div class="qslot"></div>';
+      var slot = container.querySelector(".qslot");
+      var stageEl = container.querySelector(".stage");
+      function step(){
+        if(idx >= cfg.total){ finishScreen(); return; }
+        var q = cfg.genFn();
+        idx++;
+        playQuestion(slot, q, {
+          countLabel: (cfg.label || "Question") + " " + idx + " of " + cfg.total,
+          perQuestionSec: cfg.perQuestionSec,
+          onDone: function(first){
+            if(first) correct++;
+            review.push({ q:q, first:first });
+            if(cfg.onProgress && stageEl) cfg.onProgress(correct, idx, stageEl);
+            step();
+          },
+          onTimeout: function(){ review.push({ q:q, first:false }); }
+        });
+      }
+      function finishScreen(){
+        var pct = cfg.total ? Math.round(correct/cfg.total*100) : 0;
+        var starN = pct >= 80 ? 3 : (pct >= 50 ? 2 : 1);
+        sfx("win"); confettiBurst(130);
+        var html = '<div class="q-card"><div style="font-size:4rem">' + (cfg.finishEmoji || "🏆") + '</div>'
+          + '<div class="q-text" style="font-size:2.2rem">Round Complete!</div>'
+          + '<div class="result-stars">' + repeat("⭐", starN) + repeat("☆", 3-starN) + '</div>'
+          + '<p class="q-sub">You got ' + correct + ' of ' + cfg.total + ' right first time — ' + pct + '%!</p>';
+        if(cfg.review && review.length){
+          html += '<div class="mt" style="text-align:left"><h3 style="font-family:Fredoka">🔍 Look back &amp; learn</h3>' + review.map(function(r){
+            return '<div class="review-item">' + esc(r.q.text) + ' → <b>' + esc(r.q.answer) + '</b> ' + (r.first ? '<span class="ok">✔ Great!</span>' : '<span class="no">Keep practising!</span>') + '<br><span class="muted">' + esc(r.q.explain || "") + '</span></div>';
+          }).join("") + '</div>';
+        }
+        html += '<div class="pill-row" style="justify-content:center">'
+          + '<button class="btn sun" data-act="again">🔁 Play Again</button>'
+          + '<button class="btn ghost" data-act="home">🏠 Home</button></div></div>';
+        container.innerHTML = (cfg.stageHTML ? "" : "") + html;
+        container.querySelector('[data-act="again"]').addEventListener("click", function(){ runSession(container, cfg); });
+        container.querySelector('[data-act="home"]').addEventListener("click", function(){ go("home"); });
+        if(cfg.onFinish) cfg.onFinish(correct, cfg.total);
+      }
+      step();
+    }
+
+    /* ================= LEARN SCREEN ================= */
+    var learnTopic = "add", learnLevel = 1, learnMode = "mix";
+    var LEARN_TITLES = { add:"➕ Addition Adventure", sub:"➖ Subtraction Adventure", mul:"✖️ Multiplication Adventure", div:"➗ Division Adventure" };
+    function learnGen(){
+      if(learnTopic === "add") return genAdd(learnLevel, learnMode);
+      if(learnTopic === "sub") return genSub(learnLevel, learnMode);
+      if(learnTopic === "mul") return genMul(learnLevel);
+      return genDiv(learnLevel);
+    }
+    function startLearn(topic){
+      if(topic) learnTopic = topic;
+      $("learnTitle").textContent = LEARN_TITLES[learnTopic];
+      document.querySelectorAll("#levelPills .pill").forEach(function(p){ p.classList.toggle("sel", +p.getAttribute("data-level") === learnLevel); });
+      document.querySelectorAll("#modePills .pill").forEach(function(p){ p.classList.toggle("sel", p.getAttribute("data-mode") === learnMode); });
+      $("modePills").style.display = (learnTopic === "add" || learnTopic === "sub") ? "" : "none";
+      runSession($("playArea"), { total:10, label:"Question", genFn: learnGen, finishEmoji: pick(["🎉","🌟","🚀","🏆"]) });
+    }
+    document.querySelectorAll("#levelPills .pill").forEach(function(p){
+      p.addEventListener("click", function(){ learnLevel = +p.getAttribute("data-level"); startLearn(); });
+    });
+    document.querySelectorAll("#modePills .pill").forEach(function(p){
+      p.addEventListener("click", function(){ learnMode = p.getAttribute("data-mode"); startLearn(); });
+    });
+
+    /* ================= TABLES SCREEN ================= */
+    var curTable = 2, curTMode = "learn";
+    document.querySelectorAll("#tablePills .pill").forEach(function(p){
+      p.addEventListener("click", function(){
+        curTable = +p.getAttribute("data-table");
+        document.querySelectorAll("#tablePills .pill").forEach(function(x){ x.classList.toggle("sel", x === p); });
+        renderTables();
+      });
+    });
+    document.querySelectorAll('[data-tmode]').forEach(function(p){
+      p.addEventListener("click", function(){
+        curTMode = p.getAttribute("data-tmode");
+        document.querySelectorAll('[data-tmode]').forEach(function(x){ x.classList.toggle("sel", x === p); });
+        renderTables();
+      });
+    });
+    function renderTables(){
+      var area = $("tableArea");
+      if(curTMode === "learn"){
+        var rows = "";
+        for(var i=1;i<=10;i++) rows += '<button class="trow" data-n="' + i + '"><span>' + curTable + " × " + i + '</span><span class="ans">= ' + (curTable*i) + '</span><span>🔊</span></button>';
+        area.innerHTML = '<div class="panel"><h2 class="center">Table of ' + curTable + '</h2>'
+          + '<p class="muted center">Tap any row to hear it! Count in ' + curTable + 's: ' + Array.from({length:10}, function(_,i){ return curTable*(i+1); }).join(", ") + '</p>'
+          + '<div class="speak-row"><button class="btn grape" id="readTableBtn">🔊 Read Whole Table</button>'
+          + '<button class="btn ghost" id="readTableSlowBtn">🐢 Read Slowly</button></div>'
+          + '<div class="table-rows">' + rows + '</div>'
+          + '<p class="muted center">Mastery: you have answered ' + (S.tablesBest[String(curTable)] || 0) + ' table-' + curTable + ' questions correctly. Get 10 to earn the Table ' + curTable + ' crown 👑</p></div>';
+        area.querySelectorAll(".trow").forEach(function(r){
+          r.addEventListener("click", function(){
+            var n = +r.getAttribute("data-n");
+            speak(curTable + " times " + n + " equals " + (curTable*n), false);
+            r.style.background = "#ffe9a8"; setTimeout(function(){ r.style.background = ""; }, 600);
+          });
+        });
+        $("readTableBtn").addEventListener("click", function(){ speakTable(false); });
+        $("readTableSlowBtn").addEventListener("click", function(){ speakTable(true); });
+      } else if(curTMode === "mcq"){
+        runSession(area, { total:10, label:"Table Quiz", genFn:function(){ return genTableQ(curTable, "mcq"); }, finishEmoji:"🏆",
+          onFinish:function(c){ addTableBest(c); } });
+      } else if(curTMode === "blank"){
+        runSession(area, { total:10, label:"Fill the Blank", genFn:function(){ return genTableQ(curTable, "blank"); }, finishEmoji:"✏️",
+          onFinish:function(c){ addTableBest(c); } });
+      } else if(curTMode === "timed"){
+        runSession(area, { total:10, label:"⏱️ Timed Challenge", genFn:function(){ return genTableQ(curTable, "mcq"); }, finishEmoji:"⏱️", perQuestionSec:10,
+          onFinish:function(c){ addTableBest(c); } });
+      }
+    }
+    function speakTable(slow){
+      var parts = [];
+      for(var i=1;i<=10;i++) parts.push(curTable + " times " + i + " equals " + (curTable*i));
+      speak(parts.join(". "), slow);
+    }
+    function addTableBest(c){
+      S.tablesBest[String(curTable)] = (S.tablesBest[String(curTable)] || 0) + c; save();
+    }
+
+    /* ================= SKILLS SCREEN ================= */
+    var skillBuilt = false;
+    function renderSkills(){
+      if(!skillBuilt){
+        skillBuilt = true;
+        $("skillGrid").innerHTML = SKILLS.map(function(s){
+          return '<button class="big-card" style="background:linear-gradient(150deg,#4cc9f0,#4361ee)" data-skill="' + s.id + '"><span class="emoji">' + s.e + '</span><span class="t" style="font-size:1.05rem">' + s.n + '</span><span class="s">' + s.d + '</span></button>';
+        }).join("") + '<button class="big-card" style="background:linear-gradient(150deg,#ffb703,#fb8500)" data-skill="count100"><span class="emoji">💯</span><span class="t" style="font-size:1.05rem">Counting Chart 1–100</span><span class="s">Tap numbers to hear them</span></button>'
+          + '<button class="big-card" style="background:linear-gradient(150deg,#2ec4b6,#1a9e8f)" data-skill="recognition"><span class="emoji">👂</span><span class="t" style="font-size:1.05rem">Listen &amp; Tap</span><span class="s">Number recognition</span></button>';
+        $("skillGrid").querySelectorAll("[data-skill]").forEach(function(b){
+          b.addEventListener("click", function(){ startSkill(b.getAttribute("data-skill")); });
+        });
+      }
+    }
+    function startSkill(id){
+      var area = $("skillPlayArea");
+      if(id === "count100"){
+        var cells = "";
+        for(var i=1;i<=100;i++) cells += '<button class="count-cell" data-n="' + i + '">' + i + '</button>';
+        area.innerHTML = '<div class="panel"><h2 class="center">💯 Counting Chart — 1 to 100</h2><p class="muted center">Tap any number to hear it and see its name!</p><p class="center" id="countName" style="font-family:Fredoka;font-size:1.4rem;min-height:36px"></p><div class="count-grid">' + cells + '</div></div>';
+        area.querySelectorAll(".count-cell").forEach(function(c){
+          c.addEventListener("click", function(){
+            area.querySelectorAll(".count-cell").forEach(function(x){ x.classList.remove("hot"); });
+            c.classList.add("hot");
+            var n = +c.getAttribute("data-n");
+            $("countName").textContent = n + " — " + cap(numWord(n));
+            speak(n + ". " + numWord(n), false); sfx("pop");
+          });
+        });
+        area.scrollIntoView({ behavior:"smooth" });
+        return;
+      }
+      var genFn = id === "recognition" ? genRecognition : function(){ return genSkill(id); };
+      runSession(area, { total:10, label:"Question", genFn:genFn, finishEmoji:"🧩" });
+      area.scrollIntoView({ behavior:"smooth" });
+    }
+    </script>
+    <script>
+    "use strict";
+    /* ================= GAMES ================= */
+    var GAMES = [
+      { id:"fruit", e:"🧺", n:"Fruit Basket Maths", d:"Fill the basket with fruit", gen:function(){ return Math.random()<0.5 ? genAdd(1,"picture") : genSub(1,"picture"); } },
+      { id:"rocket", e:"🚀", n:"Rocket Maths", d:"Correct answers launch the rocket", gen:function(){ return pick([genAdd, genSub])(rnd(1,2), "mix"); } },
+      { id:"monster", e:"👾", n:"Monster Challenge", d:"Befriend the monster with maths", gen:function(){ return pick([genAdd, genSub, genMul])(rnd(1,2), "mix"); } },
+      { id:"treasure", e:"🗺️", n:"Treasure Hunt", d:"Walk the path to the treasure", gen:function(){ return pick([genAdd, genSub, genDiv])(rnd(1,2), "mix"); } },
+      { id:"speed", e:"⚡", n:"Speed Challenge", d:"Beat the clock — 8 seconds each!", gen:function(){ return pick([genAdd, genSub])(1, "mix"); }, perQ:8 },
+      { id:"race", e:"🏎️", n:"Table Race", d:"Race your car with tables", gen:function(){ return genTableQ(pick([2,5,10]), "mcq"); } }
+    ];
+    var gamesBuilt = false;
+    function renderGames(){
+      if(gamesBuilt) return; gamesBuilt = true;
+      $("gameGrid").innerHTML = GAMES.map(function(g){
+        return '<button class="big-card" style="background:linear-gradient(150deg,#f72585,#7209b7)" data-game="' + g.id + '"><span class="emoji">' + g.e + '</span><span class="t" style="font-size:1.1rem">' + g.n + '</span><span class="s">' + g.d + '</span></button>';
+      }).join("");
+      $("gameGrid").querySelectorAll("[data-game]").forEach(function(b){
+        b.addEventListener("click", function(){ startGame(b.getAttribute("data-game")); });
+      });
+    }
+    function stageFor(id){
+      if(id === "fruit") return '<div class="stage"><div class="ground"></div><div class="actor basket" style="left:50%;bottom:26px;transform:translateX(-50%);font-size:4rem">🧺</div><div class="actor fill" style="left:50%;bottom:88px;transform:translateX(-50%);font-size:1.6rem"></div><div style="position:absolute;top:10px;left:14px;font-weight:900">Fruits collected: <span class="cnt">0</span>/10</div></div>';
+      if(id === "rocket") return '<div class="stage"><div class="actor rocket" style="left:50%;bottom:30px;transform:translateX(-50%);font-size:4rem">🚀</div><div style="position:absolute;top:10px;left:14px;font-weight:900">Altitude: <span class="cnt">0</span> km</div><div style="position:absolute;top:10px;right:14px;font-size:1.6rem">🌙 ⭐</div></div>';
+      if(id === "monster") return '<div class="stage"><div class="ground"></div><div class="actor monster" style="left:50%;bottom:30px;transform:translateX(-50%);font-size:4.6rem">👾</div><div style="position:absolute;top:10px;left:14px" class="hearts">💜💜💜💜💜💜💜💜💜💜</div><div style="position:absolute;top:44px;left:14px;font-weight:900">Give the monster 10 happy hearts!</div></div>';
+      if(id === "treasure") return '<div class="stage"><div class="ground"></div><div class="actor walker" style="left:4%;bottom:30px;font-size:3.2rem">🧒</div><div class="actor" style="right:4%;bottom:30px;font-size:3.6rem">🎁</div><div style="position:absolute;top:10px;left:14px;font-weight:900">Steps to treasure: <span class="cnt">0</span>/10</div></div>';
+      if(id === "speed") return '<div class="stage" style="min-height:110px"><div class="actor" style="left:50%;top:16px;transform:translateX(-50%);font-size:3.4rem">⚡🏃</div><div style="position:absolute;bottom:10px;left:0;right:0;text-align:center;font-weight:900">Answer before the bar runs out!</div></div>';
+      if(id === "race") return '<div class="stage"><div class="ground"></div><div class="actor car" style="left:2%;bottom:56px;font-size:3rem">🏎️</div><div class="actor" style="right:3%;bottom:56px;font-size:2.6rem">🏁</div><div class="actor rival" style="left:2%;bottom:8px;font-size:2.6rem">🚗</div><div style="position:absolute;top:10px;left:14px;font-weight:900">Your car 🏎️ vs Ruby 🚗 — answer fast!</div></div>';
+      return "";
+    }
+    function startGame(id){
+      var g = GAMES.filter(function(x){ return x.id === id; })[0];
+      var area = $("gameArea");
+      var rivalTimer = null;
+      var cfg = {
+        total: 10, label: g.n, genFn: g.gen, finishEmoji: g.e, perQuestionSec: g.perQ || 0,
+        stageHTML: stageFor(id),
+        onProgress: function(correct, answered, stage){
+          if(!stage) return;
+          if(id === "fruit"){
+            stage.querySelector(".cnt").textContent = correct;
+            stage.querySelector(".fill").textContent = repeat("🍎", Math.min(correct, 10));
+          }
+          if(id === "rocket"){
+            stage.querySelector(".cnt").textContent = correct * 10;
+            var r = stage.querySelector(".rocket");
+            r.style.bottom = (30 + correct * 12) + "px";
+            if(correct >= 10){ r.textContent = "🚀💨"; }
+          }
+          if(id === "monster"){
+            stage.querySelector(".hearts").textContent = repeat("💖", correct) + repeat("💜", 10 - correct);
+            if(correct >= 5) stage.querySelector(".monster").textContent = "👾💛";
+            if(correct >= 10) stage.querySelector(".monster").textContent = "😄🎉";
+          }
+          if(id === "treasure"){
+            stage.querySelector(".cnt").textContent = correct;
+            stage.querySelector(".walker").style.left = (4 + correct * 8.4) + "%";
+            if(correct >= 10) stage.querySelector(".walker").textContent = "🧒🎉";
+          }
+          if(id === "race"){
+            stage.querySelector(".car").style.left = (2 + correct * 9) + "%";
+          }
+        },
+        onFinish: function(){
+          if(rivalTimer) clearInterval(rivalTimer);
+          if(id === "race") toast("🏁 Race finished! Great driving, " + S.name + "!");
+        }
+      };
+      runSession(area, cfg);
+      if(id === "race"){
+        /* rival car creeps forward while the child plays */
+        setTimeout(function(){
+          var stage = area.querySelector(".stage"); if(!stage) return;
+          var rival = stage.querySelector(".rival"); var pos = 2;
+          rivalTimer = setInterval(function(){
+            if(!document.body.contains(rival)){ clearInterval(rivalTimer); return; }
+            pos += 1.6; if(pos > 88){ clearInterval(rivalTimer); return; }
+            rival.style.left = pos + "%";
+          }, 1400);
+        }, 60);
+      }
+      area.scrollIntoView({ behavior:"smooth" });
+    }
+
+    /* ================= SMART QUIZ ================= */
+    var quizLen = 10, quizLevel = 1, quizStreak = 0;
+    document.querySelectorAll("#quizLenPills .pill").forEach(function(p){
+      p.addEventListener("click", function(){
+        quizLen = +p.getAttribute("data-qlen");
+        document.querySelectorAll("#quizLenPills .pill").forEach(function(x){ x.classList.toggle("sel", x === p); });
+      });
+    });
+    function quizGen(){
+      var roll = Math.random();
+      if(roll < 0.28) return genAdd(quizLevel, "mix");
+      if(roll < 0.52) return genSub(quizLevel, "mix");
+      if(roll < 0.68) return genMul(quizLevel);
+      if(roll < 0.8) return genDiv(quizLevel);
+      if(roll < 0.9) return genTableQ(pick([2,5,10]), Math.random() < 0.5 ? "mcq" : "blank");
+      return genSkill(pick(SKILLS).id);
+    }
+    $("startQuizBtn").addEventListener("click", function(){
+      quizLevel = 1; quizStreak = 0;
+      runSession($("quizArea"), {
+        total: quizLen, label:"Quiz Question", genFn: quizGen, finishEmoji:"📝", review:true,
+        onProgress: null,
+        onFinish: function(correct, total){
+          if(S.badges.indexOf("quizdone") === -1){ S.badges.push("quizdone"); }
+          if(S.badges.indexOf("quiz1") === -1 && BADGES.filter(function(b){ return b.id === "quiz1"; }).length){ S.badges.push("quiz1"); }
+          save(); checkBadges();
+        }
+      });
+      /* adaptive difficulty: wrap genFn streak tracking via interval check on stats is complex;
+         instead adjust inside quizGen calls using quizStreak updated by a MutationObserver-free hook: */
+      $("quizArea").scrollIntoView({ behavior:"smooth" });
+    });
+    /* adaptive difficulty hook: watch answer recording by patching recordAnswer streak locally */
+    var _origRecord = recordAnswer;
+    recordAnswer = function(topic, correct){
+      _origRecord(topic, correct);
+      if(currentScreen === "quiz-setup"){
+        if(correct){ quizStreak++; if(quizStreak >= 3 && quizLevel < 3){ quizLevel++; quizStreak = 0; } }
+        else { quizStreak = 0; if(quizLevel > 1) quizLevel--; }
+      }
+    };
+
+    /* ================= WORLD / REWARDS ================= */
+    function renderWorld(){
+      renderTop();
+      $("worldName").textContent = S.name;
+      var ch = CHARACTERS[S.charIdx] || CHARACTERS[0];
+      $("worldChar").textContent = ch.e;
+      $("worldLevel").textContent = levelTitle();
+      var lvl = levelOf();
+      var into = S.stars - (lvl - 1) * 25;
+      $("worldFill").style.width = Math.min(100, into / 25 * 100) + "%";
+      $("worldNext").textContent = lvl >= 10 ? "You are a Little Genius! 👑 Keep playing to earn more badges." : "Earn " + (25 - into) + " more stars to reach Level " + (lvl + 1) + "!";
+      $("journeyWorld").innerHTML = journeyHTML();
+      $("charGrid").innerHTML = CHARACTERS.map(function(c, i){
+        var unlocked = S.stars >= c.need;
+        return '<button class="char-pick' + (i === S.charIdx ? " sel" : "") + (unlocked ? "" : " locked") + '" data-char="' + i + '">' + (unlocked ? c.e : "🔒") + '<span class="c-name">' + c.n + (unlocked ? "" : " · " + c.need + "⭐") + '</span></button>';
+      }).join("");
+      $("charGrid").querySelectorAll("[data-char]").forEach(function(b){
+        b.addEventListener("click", function(){
+          var i = +b.getAttribute("data-char");
+          if(S.stars >= CHARACTERS[i].need){ S.charIdx = i; save(); renderWorld(); sfx("win"); toast("🎭 You are now " + CHARACTERS[i].n + "!"); }
+          else toast("🔒 Earn " + CHARACTERS[i].need + " stars to unlock " + CHARACTERS[i].n + "!");
+        });
+      });
+      $("badgeGrid").innerHTML = BADGES.map(function(b){
+        var has = S.badges.indexOf(b.id) > -1;
+        return '<div class="badge' + (has ? "" : " locked") + '"><span class="b-emoji">' + (has ? b.e : "🔒") + '</span><span class="b-name">' + b.n + '</span></div>';
+      }).join("");
+    }
+
+    /* ================= PARENT PIN ================= */
+    var pinEntry = "";
+    function openPin(){
+      pinEntry = "";
+      document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+      $("screen-pin").classList.add("active"); currentScreen = "pin";
+      window.scrollTo({ top:0 });
+      drawPin();
+    }
+    function drawPin(){
+      document.querySelectorAll("#pinDots span").forEach(function(d, i){ d.classList.toggle("on", i < pinEntry.length); });
+    }
+    (function buildPinPad(){
+      var keys = ["1","2","3","4","5","6","7","8","9","⌫","0","✔"];
+      $("pinPad").innerHTML = keys.map(function(k){ return '<button data-pin="' + k + '">' + k + '</button>'; }).join("");
+      $("pinPad").querySelectorAll("[data-pin]").forEach(function(b){
+        b.addEventListener("click", function(){
+          var k = b.getAttribute("data-pin"); sfx("click");
+          if(k === "⌫") pinEntry = pinEntry.slice(0, -1);
+          else if(k === "✔") submitPin();
+          else if(pinEntry.length < 4) pinEntry += k;
+          drawPin();
+          if(pinEntry.length === 4) submitPin();
+        });
+      });
+    })();
+    function submitPin(){
+      if(pinEntry.length < 4) return;
+      if(pinEntry === S.pin){ pinEntry = ""; go("parent"); }
+      else { $("pinMsg").textContent = "❌ Wrong PIN — please try again."; pinEntry = ""; drawPin(); sfx("wrong"); }
+    }
+
+    /* ================= PARENT DASHBOARD ================= */
+    function fmtTime(sec){
+      var h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60);
+      return h > 0 ? h + "h " + m + "m" : m + " min";
+    }
+    function renderParent(){
+      $("parentSub").textContent = "How " + S.name + " is doing in Maths Adventure";
+      var acc = S.totalQ ? Math.round(S.totalC / S.totalQ * 100) : 0;
+      $("parentStats").innerHTML = [
+        ["❓", S.totalQ, "Questions tried"], ["✅", S.totalC, "Correct answers"], ["❌", S.totalQ - S.totalC, "Not yet right"],
+        ["🎯", acc + "%", "Accuracy"], ["⭐", S.stars, "Stars earned"], ["⏱️", fmtTime(S.totalSeconds), "Time learning"]
+      ].map(function(r){ return '<div class="stat-box"><div class="v">' + r[0] + " " + r[1] + '</div><div class="k">' + r[2] + '</div></div>'; }).join("");
+
+      $("parentBars").innerHTML = TOPICS.map(function(t){
+        var d = S.topics[t]; var p = d.a ? Math.round(d.c / d.a * 100) : 0;
+        return '<div class="bar-row"><span>' + TOPIC_LABEL[t] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + p + '%;background:' + TOPIC_COLOR[t] + '"></div></div><span>' + (d.a ? p + "%" : "—") + '</span></div>'
+          + '<p class="muted" style="margin:-4px 0 8px">' + d.c + " correct of " + d.a + " tried</p>";
+      }).join("");
+
+      $("parentTables").innerHTML = ["2","5","10"].map(function(t){
+        var c = S.tablesBest[t] || 0; var p = Math.min(100, c * 10);
+        return '<div class="bar-row"><span>Table of ' + t + '</span><div class="bar-track"><div class="bar-fill" style="width:' + p + '%;background:#7b5ea7"></div></div><span>' + (c >= 10 ? "👑" : c + "/10") + '</span></div>';
+      }).join("");
+
+      /* last 7 days */
+      var days = [], labels = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], maxQ = 1, weekQ = 0, weekC = 0;
+      for(var i=6;i>=0;i--){
+        var d = new Date(); d.setDate(d.getDate() - i);
+        var rec = S.daily[todayKey(d)] || { q:0, c:0, sec:0 };
+        days.push({ label: labels[d.getDay()], q: rec.q, c: rec.c, sec: rec.sec });
+        if(rec.q > maxQ) maxQ = rec.q;
+        weekQ += rec.q; weekC += rec.c;
+      }
+      $("parentWeek").innerHTML = days.map(function(d){
+        return '<div class="day-bar"><span style="font-weight:900;font-size:.8rem">' + d.q + '</span><div class="col" style="height:' + Math.max(4, d.q/maxQ*84) + 'px"></div><span class="dl">' + d.label + '</span></div>';
+      }).join("");
+      var weekAcc = weekQ ? Math.round(weekC/weekQ*100) : 0;
+      $("parentWeekText").textContent = "Weekly report: " + weekQ + " questions this week · " + weekC + " correct (" + weekAcc + "%) · " + fmtTime(days.reduce(function(a,d){ return a+d.sec; },0)) + " of practice. Daily goal: 15 minutes (roz ki practice).";
+
+      var weak = TOPICS.filter(function(t){ return S.topics[t].a >= 3; })
+        .map(function(t){ return { t:t, p: S.topics[t].c / S.topics[t].a }; })
+        .sort(function(a,b){ return a.p - b.p; })
+        .filter(function(x){ return x.p < 0.8; })
+        .slice(0, 2);
+      $("parentWeak").innerHTML = weak.length
+        ? weak.map(function(x){ return "🎯 " + TOPIC_LABEL[x.t] + " — " + Math.round(x.p*100) + "% correct. A little extra play here will help a lot!"; }).join("<br>")
+        : (S.totalQ < 3 ? "Not enough practice yet to tell — let " + S.name + " play a few rounds first! 🎮" : "🌟 Great news — all practised topics are at 80% or better!");
+
+      $("nameInput").value = S.name;
+    }
+    $("saveNameBtn").addEventListener("click", function(){
+      var v = $("nameInput").value.trim();
+      if(v){ S.name = v; save(); renderTop(); $("settingsMsg").textContent = "✅ Name saved: " + v; }
+    });
+    $("savePinBtn").addEventListener("click", function(){
+      var v = $("pinInput").value.trim();
+      if(/^\d{4}$/.test(v)){ S.pin = v; save(); $("settingsMsg").textContent = "✅ New PIN saved."; $("pinInput").value = ""; }
+      else $("settingsMsg").textContent = "Please enter exactly 4 numbers for the PIN.";
+    });
+    var resetArm = false;
+    $("resetBtn").addEventListener("click", function(){
+      if(!resetArm){ resetArm = true; $("resetBtn").textContent = "⚠️ Tap again to erase EVERYTHING"; setTimeout(function(){ resetArm = false; $("resetBtn").textContent = "🗑️ Reset Progress"; }, 4000); return; }
+      var pin = S.pin, nm = S.name;
+      S = freshState(); S.pin = pin; S.name = nm; save();
+      resetArm = false; $("resetBtn").textContent = "🗑️ Reset Progress";
+      renderTop(); renderParent(); toast("Progress has been reset.");
+    });
+
+    /* ================= INIT ================= */
+    renderTop(); renderHome();
+    if(S.music){ /* music starts on first tap (browser rule) */ }
+    </script>
+  </body>
+</html>
